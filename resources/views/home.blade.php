@@ -1,5 +1,5 @@
 @extends('layouts.base')
-
+<!-- HOLA -->
 @section('title', 'Inicio')
 
 
