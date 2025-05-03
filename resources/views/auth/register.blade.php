@@ -144,9 +144,24 @@ body {
     color: #4a90e2 !important; /* Cambiar a un color más oscuro al hacer hover */
     transform: scale(1.05); /* Efecto de agrandar el texto */
 }
+/* Botón regresar al home */
+.btn-link i {
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-link:hover i {
+    color: #6fb1fc;
+    transform: scale(1.2);
+}
+
 </style>
 
 <div class="container min-vh-100 d-flex align-items-center justify-content-center">
+    <!-- Botón de regreso al home -->
+<a href="{{ route('home') }}" class="btn btn-link text-white position-absolute top-0 start-0 m-4 fs-4" style="z-index: 1000;">
+    <i class="fas fa-arrow-left"></i>
+</a>
+
     <div class="col-md-8 col-lg-6">
         <div class="glass-card p-5">
             <h2 class="text-center fw-bold mb-4">{{ __('Regístrate') }}</h2>

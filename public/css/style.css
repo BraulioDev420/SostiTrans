@@ -739,3 +739,30 @@ text .animated-card:hover img {
 [data-theme="light"] .glass-card p {
     color: #000;  /* Comentarios en negro */
 }
+/* Estilo de scrollbar para navegadores basados en WebKit (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #1a1a1a; /* gris oscuro */
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #00ff88; /* verde principal */
+    border-radius: 10px;
+    border: 2px solid #1a1a1a;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #00cc6a; /* verde más oscuro al pasar el mouse */
+  }
+  
+  /* Firefox scrollbar (desde Firefox 64+) */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #00ff88 #1a1a1a;
+  }
+  
