@@ -1,0 +1,741 @@
+/* ------------------------ */
+/* Estilos Generales       */
+/* ------------------------ */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to right, #ffecd2, #f0ebd8);
+    color: #2c3e50;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    transition: background 0.3s, color 0.3s;
+}
+
+[data-theme="dark"] body {
+    background: linear-gradient(135deg, #1f1c2c, #928dab);
+    color: #ecf0f1;
+}
+
+footer
+
+/* ------------------------ */
+/* Glass Card               */
+/* ------------------------ */
+.glass-card {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    color: #2c3e50;
+}
+
+.glass-card:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.03);
+}
+
+.dark .glass-card {
+    background: rgba(44, 62, 80, 0.2);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #ecf0f1;
+}
+
+/* ------------------------ */
+/* Card                     */
+/* ------------------------ */
+.card,
+.custom-box {
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.card-title,
+.card-text {
+    transition: color 0.3s ease;
+}
+
+.card:hover,
+.custom-box:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.dark .card {
+    background-color: #2c3e50 !important;
+    color: #ecf0f1;
+}
+
+/* Glass card alignment */
+.glass-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.glass-card h5,
+.glass-card p {
+    margin: 0;
+    text-align: center;
+}
+
+.glass-card .btn {
+    align-self: center;
+}
+
+.glass-card .btn-info {
+    margin-top: 1rem;
+}
+
+/* ------------------------ */
+/* Botones                  */
+/* ------------------------ */
+.btn {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-outline-light {
+    color: #fff;
+    border-color: #ff7e5f;
+    padding: 0.5rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-light:hover {
+    background-color: #ff7e5f;
+    color: #fff;
+    border-color: #ff7e5f;
+    transform: scale(1.05);
+}
+
+.dark .btn-outline-success {
+    color: #f6d365;
+    border-color: #f6d365;
+}
+
+.dark .btn-outline-success:hover {
+    background-color: #f6d365;
+    color: #2c3e50;
+}
+
+.btn-outline-primary {
+    color: #ff6f61;
+    border-color: #ff6f61;
+}
+
+.btn-outline-primary:hover {
+    background-color: #ff6f61;
+    color: #fff;
+    border-color: #ff6f61;
+}
+
+.custom-button {
+    color: #ff6f61;
+    border-color: #fcb69f;
+}
+
+.custom-button:hover {
+    color: #fff;
+    background-color: #fcb69f;
+    border-color: #fcb69f;
+}
+
+/* ------------------------ */
+/* Footer Mejorado          */
+/* ------------------------ */
+.footer {
+    background: linear-gradient(135deg, #1D2D44, #3E5C76);
+    color: #F0EBD8;
+    padding: 2rem 1rem;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+    transition: background 0.3s ease, color 0.3s ease;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+
+}
+
+.footer a {
+    color: #F0EBD8;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: #A9BCD0;
+    text-decoration: underline;
+}
+
+.footer .footer-logo {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1rem;
+    border-radius: 50%;
+    border: 2px solid #F0EBD8;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.footer p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+}
+
+.footer .social-icons a {
+    margin: 0 10px;
+    font-size: 1.2rem;
+    display: inline-block;
+    color: #F0EBD8;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.footer .social-icons a:hover {
+    transform: scale(1.2);
+    color: #A9BCD0;
+}
+
+[data-theme="dark"] .footer {
+    background: linear-gradient(135deg, #0D1321, #1D2D44);
+    color: #F0EBD8;
+}
+
+[data-theme="dark"] .footer a:hover {
+    color: #A9BCD0;
+}
+
+.footer img {
+    filter: brightness(0.9) invert(0.95);
+}
+
+
+/* ------------------------ */
+/* Listas                   */
+/* ------------------------ */
+.list-group-item {
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.9);
+    color: #2c3e50;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.list-group-item:hover {
+    background-color: #ffe0c3;
+    transform: translateX(5px);
+}
+
+.dark .list-group-item:hover {
+    background-color: #3c4a60;
+}
+
+.list-group-item i {
+    font-size: 1.2rem;
+}
+
+.list-group-item-action.active {
+    background-color: #ff6f61 !important;
+    color: white !important;
+}
+
+/* ------------------------ */
+/* Modo Oscuro/Claro Extra  */
+/* ------------------------ */
+.bg-light {
+    background-color: #ffe0c3 !important;
+}
+
+.dark .bg-dark {
+    background-color: #2c3e50 !important;
+}
+
+.text-dark {
+    color: #130606 !important;
+}
+
+.dark .text-light {
+    color: #1ac1eb !important;
+}
+
+/* ------------------------ */
+/* Dark Mode Toggle         */
+/* ------------------------ */
+.toggle-darkmode {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background-color: #ff6f61;
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    z-index: 999;
+    transition: background 0.3s, color 0.3s;
+    font-size: 1.2rem;
+}
+
+[data-theme="dark"] .toggle-darkmode {
+    background-color: #f6d365;
+    color: #2c3e50;
+}
+
+/* ------------------------ */
+/* Glass Card               */
+/* ------------------------ */
+.glass-card {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    color: #2c3e50;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    overflow: hidden;
+}
+
+.glass-card:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.03);
+}
+
+.dark .glass-card {
+    background: rgba(44, 62, 80, 0.2);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #ecf0f1;
+}
+
+.glass-card h5,
+.glass-card p {
+    margin: 0;
+    text-align: center;
+}
+
+.glass-card .btn {
+    align-self: center;
+}
+
+.glass-card .btn-info {
+    margin-top: 1rem;
+}
+
+.glass-card img {
+    width: 100%;
+    height: auto;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    object-fit: cover;
+    display: block;
+}
+
+.glass-card .card-body {
+    padding: 1rem;
+}
+
+.text-center img {
+    max-height: 250px;
+    object-fit: cover;
+}
+
+.text-center .btn-info {
+    margin-top: 1rem;
+}
+
+/* Estilo para los botones info */
+.btn-info {
+    background-color: #ffe0c3;
+    color: #2c3e50;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 30px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-info:hover,
+.btn-info:focus {
+    background-color: #fcb69f;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .btn-info {
+    background-color: #f6d365;
+    color: #2c3e50;
+    border: none;
+}
+
+[data-theme="dark"] .btn-info:hover,
+[data-theme="dark"] .btn-info:focus {
+    background-color: #f4a261;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(255, 255, 255, 0.2);
+}
+
+.btn-info:active {
+    transform: translateY(1px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Imagenes y botones alineados */
+.text-center img {
+    max-height: 250px;
+    object-fit: cover;
+}
+
+.text-center .btn-info {
+    margin-top: 1rem;
+}
+
+/* Estilo para el menú lateral con efecto glass */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+/* ------------------------ */
+/* Animated Image Cards     */
+/* ------------------------ */
+.animated-card {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.animated-card:hover {
+    transform: scale(1.05);
+}
+
+.image-container {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+
+.image-container img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+text .animated-card:hover img {
+    transform: scale(1.1);
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(44, 62, 80, 0.75);
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    text-align: center;
+}
+
+.animated-card:hover .overlay {
+    opacity: 1;
+}
+
+.overlay-text h5 {
+    margin-bottom: 0.5rem;
+}
+
+.overlay-text p {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+}
+
+/* ------------------------ */
+/* Horizontal Parallax Effect */
+.parallax-bg {
+
+    background-image:
+        url('/images/claro1.png'),
+        url('/images/claro2.png');
+    background-repeat: repeat-x;
+    background-position: 0 0, 0 100px;
+    background-size: 100% 600px;
+    animation: parallax 10s linear infinite;
+    background-color: #ffffff00;
+    image-rendering: pixelated;
+    /* evita que se vea difuso y crea cortes */
+}
+
+.fondo {
+    background-color: #6db6ff54;
+}
+
+[data-theme="dark"] .parallax-bg {
+    background-image:
+        url('/images/oscuro1.png'),
+        url('/images/oscuro2.png');
+}
+
+/* Estilo claro con degradado */
+.titulo-flota {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 3rem;
+
+    background: linear-gradient(135deg, #1D2D44, #3E5C76);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+
+    animation: fadeInUp 1s ease;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo alternativo en modo oscuro */
+[data-theme="dark"] .titulo-flota {
+    background: none;
+    color: #F0EBD8;
+    -webkit-text-fill-color: #F0EBD8;
+    text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.1);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.fondo-parallax {
+    background-image: url('/images/claro1.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+    border-radius: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.fondo-parallax::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.85);
+    z-index: 0;
+}
+
+.fondo-parallax .card-body {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-gradient {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: white;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-gradient:hover {
+    background: linear-gradient(135deg, #0072ff, #00c6ff);
+    transform: scale(1.05);
+}
+/* Tarjeta adaptable */
+.theme-card {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+/* Estilo para lista de rutas */
+.ruta-lista .ruta-link {
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 12px;
+    display: inline-block;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    color: var(--text-color);
+}
+
+.ruta-lista .ruta-link:hover {
+    background-color: var(--highlight-bg);
+    transform: translateX(5px);
+}
+
+/* Tema claro */
+.light-mode {
+    --card-bg: #ffffff;
+    --text-color: #212529;
+    --highlight-bg: #e6f2ff;
+}
+
+/* Tema oscuro */
+.dark-mode {
+    --card-bg: #1f1f2e;
+    --text-color: #f1f1f1;
+    --highlight-bg: #2d2d44;
+}
+
+/* Estilo para el mapa */
+#map {
+    border: 2px solid var(--highlight-bg);
+    transition: all 0.3s ease;
+}
+
+
+/* COMENTARIOS HOME */
+.titulo-flota {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo para el carrusel dentro de una card con efecto glass */
+.bg-glass {
+    background: rgba(255, 255, 255, 0.1);  /* Fondo translúcido */
+    backdrop-filter: blur(10px);            /* Efecto de desenfoque */
+    border-radius: 10px;                    /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);  /* Sombra suave */
+    color: #000;                            /* Texto oscuro en modo claro */
+}
+
+/* Alineación del texto y espacio del comentario */
+.carousel-item .p-4 {
+    padding: 2rem;
+}
+
+.carousel-item .mb-2 {
+    font-size: 1.2rem;
+    font-weight: normal;
+}
+
+.carousel-item .text-muted {
+    font-size: 0.85rem;
+}
+
+/* Botón de añadir comentario */
+.btn-primary {
+    background-color: #3E5C76;
+    border: none;
+    font-weight: bold;
+    padding: 0.7rem 2rem;
+    border-radius: 50px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #1D2D44;
+}
+
+/* Imagen de la derecha */
+.col-md-6 img {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+/* --- Modo Oscuro --- */
+[data-theme="dark"] .titulo-flota {
+    color: #F0EBD8; /* Letras claras en modo oscuro */
+}
+
+[data-theme="dark"] .btn-primary {
+    background-color: #748CAB;
+    color: #fff;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+    background-color: #A1B5D8;
+}
+
+[data-theme="dark"] .bg-glass {
+    background: rgba(0, 0, 0, 0.3);  /* Fondo oscuro */
+    color: #FFF;  /* Texto claro en modo oscuro */
+}
+
+[data-theme="dark"] .carousel-item .mb-2 {
+    color: #FFF;  /* Comentarios en blanco */
+}
+
+[data-theme="dark"] .carousel-item .text-muted {
+    color: #B0B0B0;  /* Texto en gris claro */
+}
+
+/* --- Modo Claro --- */
+[data-theme="light"] .titulo-flota {
+    color: #1D2D44; /* Letras oscuras en modo claro */
+}
+
+[data-theme="light"] .bg-glass {
+    background: rgba(76, 107, 211, 0.1);  /* Fondo translúcido */
+    color: #000;  /* Texto oscuro en modo claro */
+}
+
+[data-theme="light"] .carousel-item .mb-2 {
+    color: #000;  /* Comentarios en negro */
+}
+
+[data-theme="light"] .carousel-item .text-muted {
+    color: #c2a4a4;  /* Texto en gris en modo claro */
+}
+ /* Estilo para la Glass Card */
+ .glass-card {
+    background: rgba(255, 255, 255, 0.1);  /* Fondo translúcido */
+    backdrop-filter: blur(10px);            /* Efecto de desenfoque */
+    border-radius: 10px;                    /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);  /* Sombra suave */
+    color: #000;                            /* Texto oscuro en modo claro */
+    padding: 2rem;
+}
+
+/* Alineación del texto */
+.glass-card p {
+    font-size: 1.2rem;
+    margin: 1rem 0;
+}
+
+/* --- Modo Oscuro --- */
+[data-theme="dark"] .glass-card {
+    background: rgba(0, 0, 0, 0.3);  /* Fondo oscuro */
+    color: #FFF;  /* Texto claro en modo oscuro */
+}
+
+[data-theme="dark"] .glass-card p {
+    color: #FFF;  /* Comentarios en blanco */
+}
+
+/* --- Modo Claro --- */
+[data-theme="light"] .glass-card {
+    background: rgba(255, 255, 255, 0.1);  /* Fondo translúcido */
+    color: #000;  /* Texto oscuro en modo claro */
+}
+
+[data-theme="light"] .glass-card p {
+    color: #000;  /* Comentarios en negro */
+}
