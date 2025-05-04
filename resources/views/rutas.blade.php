@@ -93,7 +93,7 @@
 
                     </div>
                 </div>
-                <!-- Modal -->
+                <!-- Modal Gestionar Rutas -->
                 <div id="modalGestion" class="modal"
                     style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
                     <div style="background:white; padding:20px; border-radius:10px; width:400px;">
@@ -128,7 +128,7 @@
     <script>
         const map = L.map('map').setView([10.96854, -74.78132], 13); // Barranquilla
         let mejorRuta = null;
-        let marcadorA, marcadorB;
+        let puntoA, puntoB;
         let rutasGeojson = [];
         let rutaEnMapa;
 
@@ -141,18 +141,18 @@
         let seleccionando = 'A';
         map.on('click', function (e) {
             if (seleccionando === 'A') {
-                if (marcadorA) map.removeLayer(marcadorA);
-                marcadorA = L.marker(e.latlng).addTo(map).bindPopup("Punto A").openPopup();
+                if (puntoA) map.removeLayer(puntoA);
+                puntoA = L.marker(e.latlng).addTo(map).bindPopup("Punto A").openPopup();
                 document.getElementById('puntoA').value = `${e.latlng.lat},${e.latlng.lng}`;
                 seleccionando = 'B';
             } else {
-                if (marcadorB) map.removeLayer(marcadorB);
-                marcadorB = L.marker(e.latlng).addTo(map).bindPopup("Punto B").openPopup();
+                if (puntoB) map.removeLayer(puntoB);
+                puntoB = L.marker(e.latlng).addTo(map).bindPopup("Punto B").openPopup();
                 document.getElementById('puntoB').value = `${e.latlng.lat},${e.latlng.lng}`;
                 seleccionando = 'A';
             }
         });
-
+        // Función para calcular la distancia entre dos puntos
         function distancia(lat1, lon1, lat2, lon2) {
             const R = 6371e3;
             const φ1 = lat1 * Math.PI / 180;
@@ -168,15 +168,37 @@
             return R * c;
         }
 
+        // Función para buscar la ruta
         function buscarRuta() {
             const valA = document.getElementById('puntoA').value;
             const valB = document.getElementById('puntoB').value;
+            // Limpiar mapa completamente antes de cargar nueva ruta
+            if (window.rutaEnMapa) {
+                map.removeLayer(window.rutaEnMapa);
+                window.rutaEnMapa = null;
+            }
 
+            if (window.puntoA) {
+                map.removeLayer(window.puntoA);
+                window.puntoA = null;
+            }
+            if (window.puntoB) {
+                map.removeLayer(window.puntoB);
+                window.puntoB = null;
+            }
             if (!valA || !valB) {
-                alert('Por favor, selecciona Punto A y Punto B.');
+                Swal.fire({
+                    icon: 'warning',
+                    title: '¡Atención!',
+                    text: 'Por favor, selecciona Punto A y Punto B.',
+                    confirmButtonText: 'Entendido'
+                });
                 return;
             }
 
+
+            // Obtener coordenadas de las direcciones ingresadas
+            // Usando Nominatim para obtener coordenadas
             function obtenerCoordenadas(direccion) {
                 return fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${direccion}`)
                     .then(response => response.json())
@@ -187,12 +209,19 @@
                                 lon: parseFloat(data[0].lon)
                             };
                         } else {
-                            alert('No se pudo encontrar la dirección.');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'No se pudo encontrar la dirección.',
+                                confirmButtonText: 'Entendido'
+                            });
                             return null;
                         }
                     });
             }
 
+            // Obtener coordenadas de ambas direcciones
+            // Usando Promise.all para esperar ambas respuestas
             Promise.all([obtenerCoordenadas(valA), obtenerCoordenadas(valB)])
                 .then(([coordenadasA, coordenadasB]) => {
                     if (!coordenadasA || !coordenadasB) return;
@@ -200,11 +229,11 @@
                     const { lat: latA, lon: lonA } = coordenadasA;
                     const { lat: latB, lon: lonB } = coordenadasB;
 
-                    if (marcadorA) map.removeLayer(marcadorA);
-                    if (marcadorB) map.removeLayer(marcadorB);
+                    if (puntoA) map.removeLayer(puntoA);
+                    if (puntoB) map.removeLayer(puntoB);
 
-                    marcadorA = L.marker([latA, lonA]).addTo(map).bindPopup("Punto A").openPopup();
-                    marcadorB = L.marker([latB, lonB]).addTo(map).bindPopup("Punto B").openPopup();
+                    puntoA = L.marker([latA, lonA]).addTo(map).bindPopup("Punto A").openPopup();
+                    puntoB = L.marker([latB, lonB]).addTo(map).bindPopup("Punto B").openPopup();
 
                     document.getElementById('puntoA').value = `${latA},${lonA}`;
                     document.getElementById('puntoB').value = `${latB},${lonB}`;
@@ -262,12 +291,19 @@
                         document.getElementById('resultadoRuta').dataset.busSugerido = rutaLabel;
                         document.getElementById('resultadoRuta').dataset.nombreRuta = rutaNombre;
                     } else {
-                        alert('No se encontró una ruta cercana.');
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ruta no encontrada',
+                            text: 'No se encontró una ruta cercana.',
+                            confirmButtonText: 'Entendido'
+                        });
                         document.getElementById('resultadoRuta').innerText = '';
                     }
                 });
         }
 
+        // Cargar rutas GeoJSON
         const rutas = [
             // SOBUSA
             { archivo: '/js/sobusa/B18-4175.geojson' },
@@ -302,6 +338,7 @@
             { archivo: '/js/la carolina/D7-4151.geojson' }
         ];
 
+        // Cargar cada archivo GeoJSON
         rutas.forEach(r => {
             fetch(r.archivo)
                 .then(resp => resp.json())
@@ -325,70 +362,136 @@
         });
 
 
+        // Guardar ruta
         function guardarRuta() {
             const user_id = @json(auth()->check() ? auth()->user()->id : null);
             if (!user_id) {
-                alert("Debes iniciar sesión para guardar una ruta.");
-                return;
-            }
-
-            const origen = document.getElementById('puntoA').value.trim();
-            const destino = document.getElementById('puntoB').value.trim();
-            const bus_sugerido = document.getElementById('resultadoRuta').innerText.trim();
-            const geojson_file = mejorRuta?.archivo?.split('/').pop(); // Esto te da solo el nombre del archivo
-
-            if (!origen || !destino) {
-                alert("Por favor completa los campos de origen y destino.");
-                return;
-            }
-
-            if (!mejorRuta || !geojson_file) {
-                alert("No se ha encontrado una ruta válida para guardar.");
-                return;
-            }
-
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            if (!csrfToken) {
-                alert("No se encontró el token CSRF.");
-                return;
-            }
-
-            fetch("/guardar-ruta", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": csrfToken
-                },
-                body: JSON.stringify({
-                    user_id,
-                    origen,
-                    destino,
-                    bus_sugerido,
-                    geojson_file
-                })
-            })
-                .then(response => {
-                    if (!response.ok) throw new Error("Error al guardar la ruta.");
-                    return response.json();
-                })
-                .then(data => {
-                    alert("Ruta guardada exitosamente.");
-                    console.log("Ruta guardada:", data);
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert("Hubo un problema al guardar la ruta.");
+                Swal.fire({
+                    icon: 'warning',
+                    title: '¡Atención!',
+                    text: 'Debes iniciar sesión para guardar una ruta.',
+                    confirmButtonText: 'Entendido'
                 });
+
+                return;
+            }
+
+            Swal.fire({
+                title: 'Nombre de la ruta',
+                input: 'text',
+                inputLabel: 'Escribe un nombre para esta ruta:',
+                inputPlaceholder: 'Ej: Ruta desde casa al trabajo',
+                showCancelButton: true,
+                confirmButtonText: 'Guardar',
+                cancelButtonText: 'Cancelar',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Debes escribir un nombre para la ruta';
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const nombre_ruta = result.value;
+                    const origen = document.getElementById('puntoA').value.trim();
+                    const destino = document.getElementById('puntoB').value.trim();
+                    const bus_sugerido = document.getElementById('resultadoRuta').innerText.trim();
+                    const geojson_file = mejorRuta?.archivo?.split('/').pop(); // Esto te da solo el nombre del archivo
+
+                    if (!origen || !destino) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Campos incompletos',
+                            text: 'Por favor completa los campos de origen y destino.',
+                            confirmButtonText: 'Ok'
+                        });
+                        return;
+                    }
+
+                    if (!mejorRuta || !geojson_file) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Ruta no válida',
+                            text: 'No se ha encontrado una ruta válida para guardar.',
+                            confirmButtonText: 'Entendido'
+                        });
+                        return;
+                    }
+
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                    if (!csrfToken) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error de seguridad',
+                            text: 'No se encontró el token CSRF.',
+                            confirmButtonText: 'Cerrar'
+                        });
+                        return;
+                    }
+
+                    fetch("/guardar-ruta", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": csrfToken
+                        },
+                        body: JSON.stringify({
+                            user_id,
+                            nombre_ruta,
+                            origen,
+                            destino,
+                            bus_sugerido,
+                            geojson_file
+                        })
+                    })
+                        .then(response => {
+                            if (!response.ok) throw new Error("Error al guardar la ruta.");
+                            return response.json();
+                        })
+                        .then(data => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Ruta guardada!',
+                                text: 'Ruta guardada exitosamente.',
+                                confirmButtonText: 'Ok'
+                            });
+                            console.log("Ruta guardada:", data);
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error al guardar',
+                                text: 'Hubo un problema al guardar la ruta.',
+                                confirmButtonText: 'Cerrar'
+                            });
+                        });
+                }
+            });
         }
+
+        // Abrir modal para gestionar rutas
         document.getElementById("abrirModal").onclick = async () => {
+            const user_id = @json(auth()->check() ? auth()->user()->id : null);
+            if (!user_id) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '¡Atención!',
+                    text: 'Debes iniciar sesión para gestionar tus rutas.',
+                    confirmButtonText: 'Entendido'
+                });
+
+                return;
+            }
             document.getElementById("modalGestion").style.display = "flex";
             await cargarOpcionesRutas();
         };
 
+        // Cerrar modal
         document.getElementById("cerrarModal").onclick = () => {
             document.getElementById("modalGestion").style.display = "none";
         };
 
+        // Cargar rutas del usuario
         async function cargarOpcionesRutas() {
             const response = await fetch("/rutas-usuario");
             const data = await response.json();
@@ -399,7 +502,7 @@
             data.rutas.forEach(ruta => {
                 const option = document.createElement("option");
                 option.value = ruta.id;
-                option.textContent = `🚌 ${ruta.bus_sugerido}`;
+                option.textContent = `🚌 ${ruta.nombre_ruta} - ${ruta.bus_sugerido}`;
                 option.dataset.origen = ruta.origen;
                 option.dataset.destino = ruta.destino;
                 option.dataset.bus = document.getElementById('resultadoRuta').dataset.busSugerido;
@@ -410,12 +513,30 @@
         }
 
 
+        // Cargar ruta seleccionada
         document.getElementById("btnCargarRuta").onclick = async () => {
+            if (rutaEnMapa) map.removeLayer(rutaEnMapa);
+            if (puntoA) map.removeLayer(puntoA);
+            if (puntoB) map.removeLayer(puntoB);
+
             const selectElement = document.getElementById("selectRuta");
             const selected = selectElement.selectedOptions[0];
             if (!selected || !selected.value) {
                 console.warn("No se seleccionó ninguna ruta");
                 return;
+            }
+
+            if (window.rutaEnMapa) {
+                map.removeLayer(window.rutaEnMapa);
+                window.rutaEnMapa = null;
+            }
+            if (window.puntoA) {
+                map.removeLayer(window.puntoA);
+                window.puntoA = null;
+            }
+            if (window.puntoB) {
+                map.removeLayer(window.puntoB);
+                window.puntoB = null;
             }
 
             const puntoAInput = document.getElementById("puntoA");
@@ -431,40 +552,32 @@
             puntoBInput.value = selected.dataset.destino;
             resultadoRuta.innerText = selected.dataset.bus;
 
-            // Eliminar marcadores anteriores si existen
-            if (window.marcadorA) {
-                map.removeLayer(window.marcadorA);
-                window.marcadorA = null;
-            }
-            if (window.marcadorB) {
-                map.removeLayer(window.marcadorB);
-                window.marcadorB = null;
-            }
-
-            // Crear nuevos marcadores
             const [latA, lonA] = selected.dataset.origen.split(',').map(Number);
             const [latB, lonB] = selected.dataset.destino.split(',').map(Number);
 
             if (!isNaN(latA) && !isNaN(lonA) && !isNaN(latB) && !isNaN(lonB)) {
-                window.marcadorA = L.marker([latA, lonA]).addTo(map).bindPopup("Punto A").openPopup();
-                window.marcadorB = L.marker([latB, lonB]).addTo(map).bindPopup("Punto B").openPopup();
+                window.puntoA = L.marker([latA, lonA]).addTo(map).bindPopup("Punto A").openPopup();
+                window.puntoB = L.marker([latB, lonB]).addTo(map).bindPopup("Punto B").openPopup();
             } else {
                 console.error("Coordenadas inválidas.");
                 return;
             }
 
-            // Construir ruta al GeoJSON con base en bus_sugerido
             const rutaGeoJson = selected.dataset.bus;
 
             if (!rutaGeoJson) {
                 console.error("El atributo dataset.bus está vacío o indefinido");
-                alert("No se pudo determinar la ruta a cargar.");
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ruta no disponible',
+                    text: 'No se pudo determinar la ruta a cargar.',
+                    confirmButtonText: 'Cerrar'
+                });
                 return;
             }
 
             const geoJsonUrl = `js/${rutaGeoJson}.geojson`;
-
-            console.log("GeoJSON URL:", geoJsonUrl);
 
             try {
                 const resp = await fetch(geoJsonUrl);
@@ -477,16 +590,23 @@
                     throw new Error("El GeoJSON está vacío o mal formado.");
                 }
 
-                // Eliminar ruta anterior si existe
-                if (window.rutaEnMapa) {
-                    map.removeLayer(window.rutaEnMapa);
-                    window.rutaEnMapa = null;
-                }
+                // Obtener color según empresa
+                let empresaNombre = '';
+                if (rutaGeoJson.includes('sobusa')) empresaNombre = 'sobusa';
+                else if (rutaGeoJson.includes('alianza sodis')) empresaNombre = 'alianza sodis';
+                else if (rutaGeoJson.includes('coolitoral')) empresaNombre = 'coolitoral';
+                else if (rutaGeoJson.includes('la carolina')) empresaNombre = 'la carolina';
 
-                // Cargar nueva ruta con el color especificado
+                let colorRuta = '#FF5733'; // color por defecto
+                if (empresaNombre === 'sobusa') colorRuta = '#32CD32';
+                else if (empresaNombre === 'alianza sodis') colorRuta = 'blue';
+                else if (empresaNombre === 'coolitoral') colorRuta = '#006400';
+                else if (empresaNombre === 'la carolina') colorRuta = '#996515';
+
+                // Cargar nueva ruta en el mapa
                 window.rutaEnMapa = L.geoJSON(data, {
                     style: {
-                        color: selected.dataset.color || '#FF5733', // Asume que `color` está en los datos de la ruta
+                        color: colorRuta,
                         weight: 5,
                         opacity: 0.9
                     },
@@ -497,59 +617,76 @@
                     }
                 }).addTo(map);
 
-                // Ajustar mapa al nuevo recorrido
                 map.fitBounds(window.rutaEnMapa.getBounds());
-
-                // Limpiar el mapa si ya hay una ruta cargada y marcar los puntos A y B
-                if (window.marcadorA || window.marcadorB) {
-                    map.removeLayer(window.marcadorA);
-                    map.removeLayer(window.marcadorB);
-                }
-
-                // Crear nuevos marcadores
-                const [latA, lonA] = selected.dataset.origen.split(',').map(Number);
-                const [latB, lonB] = selected.dataset.destino.split(',').map(Number);
-
-                if (!isNaN(latA) && !isNaN(lonA) && !isNaN(latB) && !isNaN(lonB)) {
-                    window.marcadorA = L.marker([latA, lonA]).addTo(map).bindPopup("Punto A").openPopup();
-                    window.marcadorB = L.marker([latB, lonB]).addTo(map).bindPopup("Punto B").openPopup();
-                } else {
-                    console.error("Coordenadas inválidas.");
-                    return;
-                }
-
-                // Mostrar mensaje en la interfaz
-                document.getElementById('resultadoRuta').innerText = `Ruta cargada: ${rutaGeoJson}`;
                 document.getElementById('modalGestion').style.display = 'none';
+                resultadoRuta.innerText = `Ruta cargada: ${rutaGeoJson}`;
+
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Ruta cargada con éxito!',
+                    text: `La ruta "${rutaGeoJson}" se ha visualizado correctamente en el mapa.`,
+                    timer: 2500,
+                    showConfirmButton: false
+                });
 
             } catch (error) {
                 console.error('Error al cargar la ruta:', error);
-                alert('No se pudo cargar la ruta seleccionada.');
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ruta no disponible',
+                    text: 'No se pudo cargar la ruta seleccionada.',
+                    confirmButtonText: 'Cerrar'
+                });
             }
         };
 
 
-
-
-
-
-
-
+        // Eliminar ruta
         document.getElementById("btnEliminarRuta").onclick = async () => {
             const selected = document.getElementById("selectRuta").selectedOptions[0];
             if (!selected || !selected.value) return;
 
             const rutaId = selected.value;
-            if (!confirm("¿Seguro que deseas eliminar esta ruta?")) return;
 
-            await fetch(`/eliminar-ruta/${rutaId}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Esta acción eliminará la ruta permanentemente.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        await fetch(`/eliminar-ruta/${rutaId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            }
+                        });
+
+                        await cargarOpcionesRutas();
+
+                        Swal.fire({
+                            title: '¡Eliminado!',
+                            text: 'La ruta ha sido eliminada correctamente.',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    } catch (error) {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ocurrió un problema al eliminar la ruta.',
+                            icon: 'error'
+                        });
+                    }
                 }
             });
 
-            await cargarOpcionesRutas();
         };
 
     </script>

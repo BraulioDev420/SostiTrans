@@ -10,6 +10,7 @@ class Ruta extends Model
 
     protected $fillable = [
         'user_id',
+        'nombre_ruta',
         'origen',
         'destino',
         'bus_sugerido',

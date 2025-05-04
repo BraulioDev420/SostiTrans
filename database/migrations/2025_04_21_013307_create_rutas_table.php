@@ -13,6 +13,7 @@ return new class extends Migration
         Schema::create('rutas', function (Blueprint $table) {
             $table->id(); // ID de la ruta
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Relación con el usuario
+            $table->string('nombre_ruta'); // Nombre de la ruta
             $table->string('origen'); // Origen de la ruta (coordenadas o dirección)
             $table->string('destino'); // Destino de la ruta (coordenadas o dirección)
             $table->string('bus_sugerido'); // Bus sugerido por el sistema

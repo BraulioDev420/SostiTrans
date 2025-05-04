@@ -25,7 +25,8 @@ class ComentarioController extends Controller
             'content' => $request->content,
         ]);
 
-        return redirect()->back()->with('success', 'Comentario publicado.');
+        return redirect()->back()->with('comentario_publicado', 'Comentario publicado.');
+
     }
     public function destacados()
     {

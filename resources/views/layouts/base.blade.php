@@ -20,6 +20,8 @@
     <!-- Google Fonts (solo una vez) -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+<!-- En tu base.blade.php o vista -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Tu archivo de estilos personalizado -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">

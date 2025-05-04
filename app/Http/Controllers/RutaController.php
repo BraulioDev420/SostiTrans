@@ -12,6 +12,7 @@ class RutaController extends Controller
     public function guardar(Request $request)
 {
     $request->validate([
+        'nombre_ruta' => 'required|string|max:255',
         'origen' => 'required|string|max:255',
         'destino' => 'required|string|max:255',
         'bus_sugerido' => 'nullable|string|max:255',
@@ -20,6 +21,7 @@ class RutaController extends Controller
 
     $ruta = Ruta::create([
         'user_id' => Auth::id(),
+        'nombre_ruta' => $request->nombre_ruta,
         'origen' => $request->origen,
         'destino' => $request->destino,
         'bus_sugerido' => $request->bus_sugerido,
