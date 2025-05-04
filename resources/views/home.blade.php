@@ -1,13 +1,13 @@
 @extends('layouts.base')
-<!-- HOLA -->
+
 @section('title', 'Inicio')
 
 
 @section('cards1')
-    <!-- CARDS -->
+    
+<!-- CARDS -->
     <div class="container py-5 my-5 border-top">
         <h2 class="titulo-flota">Nuestra Flota de Buses</h2>
-
         <div class="position-relative">
             <!-- CARDS DE EMPRESAS -->
             <div class="container py-5">
@@ -49,15 +49,6 @@
 
 @section('content')
 
-
-<style>
-   
-</style>
-
-
-
-
-
     <!-- SOBRE NOSOTROS -->
     <div class="container py-5 my-5 border-top">
         <h2 class="titulo-flota">Sobre Nosotros</h2>
@@ -82,15 +73,9 @@
         </div>
     </div>
 
-
-
-
-
-
-
-
-
 @endsection
+
+
 @section('comentarios')
 
     @include('destacados', ['comentarios' => $comentarios])
@@ -115,17 +100,20 @@
                         @endforeach
                     </div>
 
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselComentarios" data-bs-slide="prev">
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselComentarios"
+                        data-bs-slide="prev">
                         <span class="carousel-control-prev-icon"></span>
                     </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselComentarios" data-bs-slide="next">
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselComentarios"
+                        data-bs-slide="next">
                         <span class="carousel-control-next-icon"></span>
                     </button>
                 </div>
 
                 <!-- Botón para añadir comentarios debajo del carrusel -->
                 <div class="text-center mt-4">
-                    <a href="{{ route('comentarios.index') }}" class="btn btn-lg btn-primary rounded-pill">Añadir Comentarios</a>
+                    <a href="{{ route('comentarios.index') }}" class="btn btn-lg btn-primary rounded-pill">Añadir
+                        Comentarios</a>
                 </div>
             </div>
 
@@ -137,6 +125,3 @@
         </div>
     </div>
 @endsection
-
-
-

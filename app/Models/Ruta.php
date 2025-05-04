@@ -8,18 +8,17 @@ class Ruta extends Model
 {
     use HasFactory;
 
-    // Definir los campos que puedes asignar masivamente
-    protected $fillable = ['empresa_id', 'nombre_ruta', 'geojson_file'];
+    protected $fillable = [
+        'user_id',
+        'origen',
+        'destino',
+        'bus_sugerido',
+        'geojson_file',
+    ];
 
-    public function empresa()
+    public function user()
     {
-        return $this->belongsTo(Empresa::class);
+        return $this->belongsTo(User::class);
     }
-    // Relación muchos a muchos con Parada
-    public function paradas()
-    {
-        return $this->belongsToMany(Parada::class, 'ruta_parada')
-            ->withPivot('orden')
-            ->orderBy('pivot_orden'); // <- ordena las paradas por el campo 'orden'
-    }
+
 }

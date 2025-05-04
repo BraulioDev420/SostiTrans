@@ -1,22 +1,41 @@
 <?php
-// app/Http/Controllers/RutaController.php
 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Ruta;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class RutaController extends Controller
 {
+    // Guarda una ruta en la base de datos
+    public function guardar(Request $request)
+{
+    $request->validate([
+        'origen' => 'required|string|max:255',
+        'destino' => 'required|string|max:255',
+        'bus_sugerido' => 'nullable|string|max:255',
+        'geojson_file' => 'required|string|max:255', // Ya no es un array
+    ]);
+
+    $ruta = Ruta::create([
+        'user_id' => Auth::id(),
+        'origen' => $request->origen,
+        'destino' => $request->destino,
+        'bus_sugerido' => $request->bus_sugerido,
+        'geojson_file' => $request->geojson_file, // Guardas solo el nombre, ej: "C12-4169.geojson"
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Ruta guardada con éxito.',
+        'ruta' => $ruta
+    ]);
+}
+
+    // Vista principal
     public function index()
     {
-        // Obtiene todas las rutas con sus paradas
-        $rutas = Ruta::with('paradas')->get();
-        //dd($rutas);
-        \Log::info($rutas);
-        // Envía los datos a la vista
-        return view('rutas', compact('rutas'));
+        return view('rutas');
     }
-    
 }
