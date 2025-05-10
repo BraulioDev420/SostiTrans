@@ -4,8 +4,8 @@
 
 
 @section('cards1')
-    
-<!-- CARDS -->
+
+    <!-- CARDS -->
     <div class="container py-5 my-5 border-top">
         <h2 class="titulo-flota">Nuestra Flota de Buses</h2>
         <div class="position-relative">
@@ -67,7 +67,47 @@
                 <img src="https://th.bing.com/th/id/OIP.MFhExc58E308mMToMEVgMQHaEi?rs=1&pid=ImgDetMain"
                     class="img-fluid rounded mb-3 shadow" alt="Sobre Nosotros">
                 <div>
-                    <a href="#" class="btn btn-sm btn-info rounded-pill mt-2">Más sobre nosotros -></a>
+                    <button type="button" class="btn btn-sm btn-info rounded-pill mt-2" data-bs-toggle="modal"
+                        data-bs-target="#modalSobreNosotros">
+                        Más sobre nosotros ->
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Sobre Nosotros -->
+    <div class="modal fade" id="modalSobreNosotros" tabindex="-1" aria-labelledby="sobreNosotrosLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content modal-constante border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-info text-white rounded-top-4">
+                    <h5 class="modal-title" id="sobreNosotrosLabel">¿Quiénes Somos?</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p><strong>SostiTrans</strong> es una plataforma web innovadora diseñada para mejorar el transporte
+                        público en la ciudad. Nuestro objetivo es facilitar el acceso a rutas óptimas, fomentar el uso del
+                        transporte colectivo y ofrecer soluciones inteligentes y sostenibles.</p>
+
+                    <ul class="list-unstyled mt-4">
+                        <li>🚍 <strong>Conectamos personas y destinos</strong> de forma eficiente.</li>
+                        <li>🌍 <strong>Comprometidos con el medio ambiente</strong>, promoviendo una movilidad sostenible.
+                        </li>
+                        <li>🔒 <strong>Transparencia y seguridad</strong> en cada interacción.</li>
+                        <li>🤝 <strong>Escuchamos a los ciudadanos</strong> para construir un mejor sistema de transporte
+                            juntos.</li>
+                    </ul>
+
+                    <p class="mt-4">Nuestro equipo trabaja constantemente para incorporar nuevas tecnologías, mejorar la
+                        experiencia del usuario y ofrecer información en tiempo real que haga del transporte una experiencia
+                        más confiable y cómoda.</p>
+                    <p class="mt-4"><strong>Equipo de Desarrolladores:</strong> Braulio Castro, Luis Pérez, Andrés Algarín,
+                        Antony Lechuga.</p>
+                </div>
+                <div class="modal-footer bg-light rounded-bottom-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill"
+                        data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>

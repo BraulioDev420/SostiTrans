@@ -23,8 +23,9 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
+        'role',
     ];
-    
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -49,7 +50,18 @@ class User extends Authenticatable
         ];
     }
     public function comentarios()
-{
-    return $this->hasMany(Comentario::class);
-}
+    {
+        return $this->hasMany(Comentario::class);
+    }
+
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+    public function rutas()
+    {
+        return $this->hasMany(Ruta::class);
+    }
+
 }

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RutaController;
 use App\Http\Controllers\ComentarioController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -32,3 +33,15 @@ use App\Http\Controllers\EmpresaController;
 
 Route::get('/empresa/{id}', [EmpresaController::class, 'show'])->name('empresa.show');
 
+
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    // Ruta para mostrar el panel de administración
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+
+    // Ruta para eliminar un usuario
+    Route::delete('/usuarios/{id}', [AdminController::class, 'destroyUser'])->name('usuarios.destroy');
+
+    // Ruta para eliminar un comentario
+    Route::delete('/comentarios/{id}', [AdminController::class, 'destroyComment'])->name('comentarios.destroy');
+});

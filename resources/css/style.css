@@ -190,4 +190,12 @@ body {
 
 .carousel-inner {
     border-radius: 1rem;
+}.list-hover {
+    transition: all 0.3s ease;
+}
+
+.list-hover:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    transform: translateX(5px);
+    border-left: 4px solid #0d6efd;
 }

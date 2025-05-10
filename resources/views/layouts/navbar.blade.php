@@ -131,6 +131,15 @@
                 <a class="nav-link px-3 py-2 {{ request()->is('comentarios*') ? 'active-custom' : '' }}"
                     href="{{ route('comentarios.index') }}">Comentarios</a>
             </li>
+            @auth
+                @if (auth()->user()->isAdmin())
+                    <li class="nav-item">
+                        <a class="nav-link px-3 py-2 {{ request()->is('admin*') ? 'active-custom' : '' }}"
+                            href="{{ route('admin.index') }}">Administración</a>
+                    </li>
+                @endif
+            @endauth
+
         </ul>
 
         {{-- Usuario --}}

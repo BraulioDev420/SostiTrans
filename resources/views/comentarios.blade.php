@@ -2,7 +2,8 @@
 
 @section('title', 'Comentarios')
 
-@section('content')@if(session('comentario_publicado'))
+@section('content')
+    @if(session('comentario_publicado'))
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             Swal.fire({
@@ -14,6 +15,7 @@
             });
         </script>
     @endif
+
     <style>
         .titulo-flota {
             font-size: 2.5rem;
@@ -116,8 +118,9 @@
         [data-theme="dark"] .login-reminder a {
             color: #A1B5D8;
         }
-    </style>
 
+
+    </style>
 
     <div class="container py-5">
         <h2 class="titulo-flota">Comentarios</h2>
@@ -148,6 +151,35 @@
                 </div>
             </div>
         @endforeach
-    </div>
 
+        <!-- Paginación -->
+        <div class="d-flex justify-content-center flex-column align-items-center">
+            <nav aria-label="Paginación de comentarios">
+                <ul class="pagination">
+                    <li class="page-item {{ $comentarios->onFirstPage() ? 'disabled' : '' }}">
+                        <a class="page-link" href="{{ $comentarios->previousPageUrl() }}" tabindex="-1"
+                            aria-disabled="true">
+                            Anterior
+                        </a>
+                    </li>
+
+                    @for ($i = 1; $i <= $comentarios->lastPage(); $i++)
+                        <li class="page-item {{ $comentarios->currentPage() == $i ? 'active' : '' }}">
+                            <a class="page-link" href="{{ $comentarios->url($i) }}">{{ $i }}</a>
+                        </li>
+                    @endfor
+
+                    <li class="page-item {{ $comentarios->hasMorePages() ? '' : 'disabled' }}">
+                        <a class="page-link" href="{{ $comentarios->nextPageUrl() }}" aria-label="Next">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Total de comentarios -->
+            <p class="mt-3 text-muted">
+                Total de comentarios: {{ $comentarios->total() }}
+            </p>
+        </div>
+
+    </div>
 @endsection

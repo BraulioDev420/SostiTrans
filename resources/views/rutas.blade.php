@@ -95,21 +95,58 @@
                 </div>
                 <!-- Modal Gestionar Rutas -->
                 <div id="modalGestion" class="modal"
-                    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
-                    <div style="background:white; padding:20px; border-radius:10px; width:400px;">
-                        <h5 class="card-title fw-semibold text-dark mb-4">Mis Rutas Guardadas</h5>
+                    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);  justify-content:center; align-items:center; z-index:9999;">
 
-                        <select id="selectRuta" class="form-select my-3" style="width:100%">
+                    <div
+                        style="background:#ffffff; padding:2rem; border-radius:1rem; width:90%; max-width:450px; box-shadow:0 10px 25px rgba(0,0,0,0.2); position:relative; animation: fadeIn 0.3s ease-in-out;">
+
+                        <!-- Botón de cierre flotante -->
+                        <button id="cerrarModal"
+                            style="position:absolute; top:15px; right:15px; background:transparent; border:none; font-size:1.5rem; color:#999; cursor:pointer;">
+                            &times;
+                        </button>
+
+                        <!-- Título -->
+                        <h4 class="text-center fw-bold mb-4" style="color:#333;">🗺️ Mis Rutas Guardadas</h4>
+
+                        <!-- Selector de rutas -->
+                        <label for="selectRuta" class="form-label text-muted fw-semibold">Selecciona una ruta:</label>
+                        <select id="selectRuta" class="form-select mb-4"
+                            style="border-radius:0.5rem; padding:0.6rem; border:1px solid #ccc;">
                             <option value="">Selecciona una ruta</option>
                         </select>
 
-                        <div class="d-flex justify-content-between">
-                            <button id="btnCargarRuta" class="btn btn-success">Cargar</button>
-                            <button id="btnEliminarRuta" class="btn btn-danger">Eliminar</button>
-                            <button id="cerrarModal" class="btn btn-secondary">Cerrar</button>
+                        <!-- Botones de acción -->
+                        <div class="d-flex flex-column gap-3">
+                            <button id="btnCargarRuta" class="btn btn-success fw-semibold w-100 py-2 rounded-pill">
+                                ✅ Cargar Ruta
+                            </button>
+                            <button id="btnEliminarRuta" class="btn btn-danger fw-semibold w-100 py-2 rounded-pill">
+                                🗑️ Eliminar Ruta
+                            </button>
+                            <button class="btn btn-secondary fw-semibold w-100 py-2 rounded-pill"
+                                onclick="document.getElementById('modalGestion').style.display='none'">
+                                ❌ Cerrar
+                            </button>
                         </div>
                     </div>
                 </div>
+
+                <!-- Animación opcional -->
+                <style>
+                    @keyframes fadeIn {
+                        from {
+                            opacity: 0;
+                            transform: translateY(-20px);
+                        }
+
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+                </style>
+
 
 
 
@@ -479,17 +516,28 @@
                     text: 'Debes iniciar sesión para gestionar tus rutas.',
                     confirmButtonText: 'Entendido'
                 });
-
                 return;
             }
-            document.getElementById("modalGestion").style.display = "flex";
+
+            const modal = document.getElementById("modalGestion");
+            modal.classList.remove("modal-hide");
+            modal.classList.add("modal-show");
+            modal.style.display = "flex";
+
             await cargarOpcionesRutas();
         };
 
-        // Cerrar modal
+        // Cerrar modal con animación
         document.getElementById("cerrarModal").onclick = () => {
-            document.getElementById("modalGestion").style.display = "none";
+            const modal = document.getElementById("modalGestion");
+            modal.classList.remove("modal-show");
+            modal.classList.add("modal-hide");
+
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 300); // Tiempo igual al de la animación
         };
+
 
         // Cargar rutas del usuario
         async function cargarOpcionesRutas() {
@@ -686,7 +734,7 @@
                     }
                 }
             });
-
+            document.getElementById('modalGestion').style.display = 'none';
         };
 
     </script>

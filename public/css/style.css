@@ -379,7 +379,7 @@ footer
 [data-theme="dark"] .btn-info:focus {
     background-color: #f4a261;
     transform: translateY(-3px);
-    box-shadow: 0 8px 15px rgba(255, 255, 255, 0.2);
+
 }
 
 .btn-info:active {
@@ -527,6 +527,7 @@ text .animated-card:hover img {
         transform: translateY(0);
     }
 }
+
 .fondo-parallax {
     background-image: url('/images/claro1.png');
     background-size: cover;
@@ -541,7 +542,8 @@ text .animated-card:hover img {
 .fondo-parallax::before {
     content: "";
     position: absolute;
-    top: 0; left: 0;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     background: rgba(255, 255, 255, 0.85);
@@ -564,6 +566,7 @@ text .animated-card:hover img {
     background: linear-gradient(135deg, #0072ff, #00c6ff);
     transform: scale(1.05);
 }
+
 /* Tarjeta adaptable */
 .theme-card {
     background-color: var(--card-bg);
@@ -619,11 +622,16 @@ text .animated-card:hover img {
 
 /* Estilo para el carrusel dentro de una card con efecto glass */
 .bg-glass {
-    background: rgba(255, 255, 255, 0.1);  /* Fondo translúcido */
-    backdrop-filter: blur(10px);            /* Efecto de desenfoque */
-    border-radius: 10px;                    /* Bordes redondeados */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);  /* Sombra suave */
-    color: #000;                            /* Texto oscuro en modo claro */
+    background: rgba(255, 255, 255, 0.1);
+    /* Fondo translúcido */
+    backdrop-filter: blur(10px);
+    /* Efecto de desenfoque */
+    border-radius: 10px;
+    /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    /* Sombra suave */
+    color: #000;
+    /* Texto oscuro en modo claro */
 }
 
 /* Alineación del texto y espacio del comentario */
@@ -662,7 +670,8 @@ text .animated-card:hover img {
 
 /* --- Modo Oscuro --- */
 [data-theme="dark"] .titulo-flota {
-    color: #F0EBD8; /* Letras claras en modo oscuro */
+    color: #F0EBD8;
+    /* Letras claras en modo oscuro */
 }
 
 [data-theme="dark"] .btn-primary {
@@ -675,42 +684,57 @@ text .animated-card:hover img {
 }
 
 [data-theme="dark"] .bg-glass {
-    background: rgba(0, 0, 0, 0.3);  /* Fondo oscuro */
-    color: #FFF;  /* Texto claro en modo oscuro */
+    background: rgba(0, 0, 0, 0.3);
+    /* Fondo oscuro */
+    color: #FFF;
+    /* Texto claro en modo oscuro */
 }
 
 [data-theme="dark"] .carousel-item .mb-2 {
-    color: #FFF;  /* Comentarios en blanco */
+    color: #FFF;
+    /* Comentarios en blanco */
 }
 
 [data-theme="dark"] .carousel-item .text-muted {
-    color: #B0B0B0;  /* Texto en gris claro */
+    color: #B0B0B0;
+    /* Texto en gris claro */
 }
 
 /* --- Modo Claro --- */
 [data-theme="light"] .titulo-flota {
-    color: #1D2D44; /* Letras oscuras en modo claro */
+    color: #1D2D44;
+    /* Letras oscuras en modo claro */
 }
 
 [data-theme="light"] .bg-glass {
-    background: rgba(76, 107, 211, 0.1);  /* Fondo translúcido */
-    color: #000;  /* Texto oscuro en modo claro */
+    background: rgba(76, 107, 211, 0.1);
+    /* Fondo translúcido */
+    color: #000;
+    /* Texto oscuro en modo claro */
 }
 
 [data-theme="light"] .carousel-item .mb-2 {
-    color: #000;  /* Comentarios en negro */
+    color: #000;
+    /* Comentarios en negro */
 }
 
 [data-theme="light"] .carousel-item .text-muted {
-    color: #c2a4a4;  /* Texto en gris en modo claro */
+    color: #c2a4a4;
+    /* Texto en gris en modo claro */
 }
- /* Estilo para la Glass Card */
- .glass-card {
-    background: rgba(255, 255, 255, 0.1);  /* Fondo translúcido */
-    backdrop-filter: blur(10px);            /* Efecto de desenfoque */
-    border-radius: 10px;                    /* Bordes redondeados */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);  /* Sombra suave */
-    color: #000;                            /* Texto oscuro en modo claro */
+
+/* Estilo para la Glass Card */
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    /* Fondo translúcido */
+    backdrop-filter: blur(10px);
+    /* Efecto de desenfoque */
+    border-radius: 10px;
+    /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    /* Sombra suave */
+    color: #000;
+    /* Texto oscuro en modo claro */
     padding: 2rem;
 }
 
@@ -722,47 +746,110 @@ text .animated-card:hover img {
 
 /* --- Modo Oscuro --- */
 [data-theme="dark"] .glass-card {
-    background: rgba(0, 0, 0, 0.3);  /* Fondo oscuro */
-    color: #FFF;  /* Texto claro en modo oscuro */
+    background: rgba(0, 0, 0, 0.3);
+    /* Fondo oscuro */
+    color: #FFF;
+    /* Texto claro en modo oscuro */
 }
 
 [data-theme="dark"] .glass-card p {
-    color: #FFF;  /* Comentarios en blanco */
+    color: #FFF;
+    /* Comentarios en blanco */
 }
 
 /* --- Modo Claro --- */
 [data-theme="light"] .glass-card {
-    background: rgba(255, 255, 255, 0.1);  /* Fondo translúcido */
-    color: #000;  /* Texto oscuro en modo claro */
+    background: rgba(255, 255, 255, 0.1);
+    /* Fondo translúcido */
+    color: #000;
+    /* Texto oscuro en modo claro */
 }
 
 [data-theme="light"] .glass-card p {
-    color: #000;  /* Comentarios en negro */
+    color: #000;
+    /* Comentarios en negro */
 }
+
 /* Estilo de scrollbar para navegadores basados en WebKit (Chrome, Edge, Safari) */
 ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
-  }
-  
-  ::-webkit-scrollbar-track {
-    background: #1a1a1a; /* gris oscuro */
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    /* gris oscuro */
     border-radius: 10px;
-  }
-  
-  ::-webkit-scrollbar-thumb {
-    background: #00ff88; /* verde principal */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #00ff88;
+    /* verde principal */
     border-radius: 10px;
     border: 2px solid #1a1a1a;
-  }
-  
-  ::-webkit-scrollbar-thumb:hover {
-    background: #00cc6a; /* verde más oscuro al pasar el mouse */
-  }
-  
-  /* Firefox scrollbar (desde Firefox 64+) */
-  * {
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #00cc6a;
+    /* verde más oscuro al pasar el mouse */
+}
+
+/* Firefox scrollbar (desde Firefox 64+) */
+* {
     scrollbar-width: thin;
     scrollbar-color: #00ff88 #1a1a1a;
-  }
-  
+}
+
+/* Estilo personalizado para la paginación */
+.pagination {
+    margin-top: 1rem;
+}
+
+.pagination .page-item {
+    margin: 0 5px;
+}
+
+.pagination .page-link {
+    background-color: #3E5C76;
+    color: white;
+    border-radius: 30px;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    background-color: #1D2D44;
+    color: white;
+}
+
+.pagination .active .page-link {
+    background-color: #1D2D44;
+    color: white;
+    border: none;
+}
+
+.pagination .disabled .page-link {
+    background-color: #ccc;
+    color: #999;
+    pointer-events: none;
+}
+
+.pagination .page-item.disabled a {
+    pointer-events: none;
+}
+.modal-constante {
+    background-color: #ffffff !important; /* Fondo fijo blanco */
+    color: #212529 !important;            /* Texto oscuro */
+}
+
+.modal-constante .modal-header {
+    background-color: #17a2b8 !important; /* Color info */
+    color: white !important;
+}
+
+
+
+.modal-constante .btn-close {
+    filter: invert(1); /* Hace que el botón de cierre sea visible siempre */
+}

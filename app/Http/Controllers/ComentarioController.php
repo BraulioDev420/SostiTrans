@@ -11,6 +11,7 @@ class ComentarioController extends Controller
     public function index()
     {
         $comentarios = Comentario::with('user')->latest()->get();
+        $comentarios = Comentario::with('user')->latest()->paginate(5);
         return view('comentarios', compact('comentarios'));
     }
 
@@ -32,6 +33,15 @@ class ComentarioController extends Controller
     {
         $comentarios = Comentario::with('user')->latest()->take(5)->get();
         return view('destacados', compact('comentarios'));
+    }
+    public function destroy($id)
+    {
+        // Buscar y eliminar el comentario
+        $comentario = Comentario::findOrFail($id);
+        $comentario->delete();
+
+        // Redirigir con un mensaje
+        return redirect()->route('admin.index')->with('success', 'Comentario eliminado exitosamente.');
     }
 
 }
