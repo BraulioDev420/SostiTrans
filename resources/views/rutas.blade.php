@@ -186,19 +186,24 @@
                 seleccionando = 'A';
             }
         });
-        // Función para calcular la distancia entre dos puntos
+
+        // Función para calcular la distancia entre dos puntos con la formula de havérsin
         function distancia(lat1, lon1, lat2, lon2) {
+            // Radio de la Tierra en metros
             const R = 6371e3;
+            // Convierte las latitudes de grados a radianes
             const φ1 = lat1 * Math.PI / 180;
             const φ2 = lat2 * Math.PI / 180;
+            // Calcula la diferencia de latitud y longitud
             const Δφ = (lat2 - lat1) * Math.PI / 180;
             const Δλ = (lon2 - lon1) * Math.PI / 180;
-
+            // Aplica la fórmula de havérsin
             const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
                 Math.cos(φ1) * Math.cos(φ2) *
                 Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
+            // Devuelve la distancia en metros
             return R * c;
         }
 
@@ -231,8 +236,8 @@
             }
 
 
-            // Obtener coordenadas de las direcciones ingresadas
-            // Usando Nominatim para obtener coordenadas
+            // Traduce la dirección en texto a coordenadas geográficas reales.
+            // Obtiene coordenadas usando Nominatim
             function obtenerCoordenadas(direccion) {
                 return fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${direccion}`)
                     .then(response => response.json())
@@ -274,10 +279,10 @@
 
 
                     let mejorDistancia = Infinity;
-
+                    //Busca la mejor ruta según cercanía
                     rutasGeojson.forEach(ruta => {
                         let distA = Infinity, distB = Infinity;
-
+                        //Suma las dos distancias (inicio + fin), y la ruta con menor total es la mejor.
                         ruta.coords.forEach(coord => {
                             const d1 = distancia(latA, lonA, coord.lat, coord.lng);
                             const d2 = distancia(latB, lonB, coord.lat, coord.lng);
@@ -291,7 +296,7 @@
                             mejorRuta = ruta;
                         }
                     });
-
+                    //Dibuja la mejor ruta en el mapa
                     if (mejorRuta) {
                         if (rutaEnMapa) map.removeLayer(rutaEnMapa);
 
@@ -429,7 +434,7 @@
                     const origen = document.getElementById('puntoA').value.trim();
                     const destino = document.getElementById('puntoB').value.trim();
                     const bus_sugerido = document.getElementById('resultadoRuta').innerText.trim();
-                    const geojson_file = mejorRuta?.archivo?.split('/').pop(); // Esto te da solo el nombre del archivo
+                    const geojson_file = mejorRuta?.archivo?.split('/').pop(); 
 
                     if (!origen || !destino) {
                         Swal.fire({
@@ -539,10 +544,10 @@
         // Cargar rutas del usuario
         async function cargarOpcionesRutas() {
             const response = await fetch("/rutas-usuario");
-            const data = await response.json();
+            const data = await response.json(); // Recibe JSON con rutas
 
             const select = document.getElementById("selectRuta");
-            select.innerHTML = '<option value="">Selecciona una ruta</option>';
+            select.innerHTML = '<option value="">Selecciona una ruta</option>'; // Limpia opciones anteriores
 
             data.rutas.forEach(ruta => {
                 const option = document.createElement("option");
@@ -592,11 +597,11 @@
                 console.error("Uno de los elementos no se encontró en el DOM");
                 return;
             }
-
+            //Rellena los inputs y muestra el nombre del bus
             puntoAInput.value = selected.dataset.origen;
             puntoBInput.value = selected.dataset.destino;
             resultadoRuta.innerText = selected.dataset.bus;
-
+            //Agrega marcadores en el mapa para Punto A y Punto B
             const [latA, lonA] = selected.dataset.origen.split(',').map(Number);
             const [latB, lonB] = selected.dataset.destino.split(',').map(Number);
 
@@ -607,7 +612,7 @@
                 console.error("Coordenadas inválidas.");
                 return;
             }
-
+            //Cargar archivo GeoJSON de la ruta
             const rutaGeoJson = selected.dataset.bus;
 
             if (!rutaGeoJson) {
@@ -622,7 +627,7 @@
                 return;
             }
 
-            const geoJsonUrl = `js/${rutaGeoJson}.geojson`;
+            const geoJsonUrl = `js/${rutaGeoJson}.geojson`;// Ruta donde están las rutas GeoJSON
 
             try {
                 const resp = await fetch(geoJsonUrl);
@@ -641,7 +646,7 @@
                 else if (rutaGeoJson.includes('alianza sodis')) empresaNombre = 'alianza sodis';
                 else if (rutaGeoJson.includes('coolitoral')) empresaNombre = 'coolitoral';
                 else if (rutaGeoJson.includes('la carolina')) empresaNombre = 'la carolina';
-
+                //Pintar la ruta en el mapa con color según empresa
                 let colorRuta = '#FF5733'; // color por defecto
                 if (empresaNombre === 'sobusa') colorRuta = '#32CD32';
                 else if (empresaNombre === 'alianza sodis') colorRuta = 'blue';
@@ -661,7 +666,7 @@
                         }
                     }
                 }).addTo(map);
-
+                //Ajustar el mapa y cerrar el modal
                 map.fitBounds(window.rutaEnMapa.getBounds());
                 document.getElementById('modalGestion').style.display = 'none';
                 resultadoRuta.innerText = `Ruta cargada: ${rutaGeoJson}`;
@@ -689,9 +694,10 @@
 
         // Eliminar ruta
         document.getElementById("btnEliminarRuta").onclick = async () => {
+            //Se obtiene la ruta seleccionada del select
             const selected = document.getElementById("selectRuta").selectedOptions[0];
             if (!selected || !selected.value) return;
-
+            //Se obtiene el id de la ruta seleccionada
             const rutaId = selected.value;
 
             Swal.fire({

@@ -141,7 +141,7 @@
         @else
             <p class="login-reminder">Debes <a href="{{ route('login') }}">iniciar sesión</a> para comentar.</p>
         @endauth
-
+        <!-- Muestra los comentarios -->
         @foreach($comentarios as $comentario)
             <div class="card comentario-card mb-4">
                 <div class="card-body">

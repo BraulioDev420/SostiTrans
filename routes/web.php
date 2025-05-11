@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RutaController;
 use App\Http\Controllers\ComentarioController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\EmpresaController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -21,15 +22,18 @@ Route::get('/rutas-usuario', function () {
 })->middleware('auth');
 
 Route::delete('/eliminar-ruta/{id}', function ($id) {
+    // Buscar la ruta asociada al usuario autenticado
     $ruta = \App\Models\Ruta::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+    // Eliminar la ruta de la base de datos
     $ruta->delete();
+    // Devolver respuesta JSON
     return response()->json(['success' => true]);
 })->middleware('auth');
 
 
 // Esto agrega las rutas de login, logout, register, password reset, etc.
 Auth::routes();
-use App\Http\Controllers\EmpresaController;
+
 
 Route::get('/empresa/{id}', [EmpresaController::class, 'show'])->name('empresa.show');
 
