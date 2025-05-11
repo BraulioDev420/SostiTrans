@@ -12,33 +12,25 @@
             <!-- CARDS DE EMPRESAS -->
             <div class="container py-5">
                 <div id="productCarousel" class="d-flex overflow-auto gap-4 px-2 pb-3" style="scroll-behavior: smooth;">
-                    @php
-                        $empresas = [
-                            ['nombre' => 'Sobusa', 'descripcion' => 'Conoce todo sobre nuestra empresa de transporte.', 'imagen' => 'sobusa.jpeg', 'ruta' => '/empresa/1'],
-                            ['nombre' => 'Alianza Sodis', 'descripcion' => 'Descubre nuestros servicios de transporte sostenible.', 'imagen' => 'sodis.jpeg', 'ruta' => '/empresa/2'],
-                            ['nombre' => 'Coolitoral', 'descripcion' => 'Comprometidos con la comodidad de los usuarios.', 'imagen' => 'colitoral.jpeg', 'ruta' => '/empresa/3'],
-                            ['nombre' => 'La Carolina', 'descripcion' => 'Únete a la revolución del transporte público.', 'imagen' => 'carolina.jpeg', 'ruta' => '/empresa/4']
-                        ];
-                    @endphp
-
                     @foreach ($empresas as $empresa)
                         <div class="animated-card glass-card p-0 rounded-4 shadow"
                             style="min-width: 260px; max-width: 280px; overflow: hidden;">
                             <div class="image-container">
-                                <img src="{{ asset('images/' . $empresa['imagen']) }}" class="card-img-top"
-                                    alt="{{ $empresa['nombre'] }}">
+                                <img src="{{ asset('images/' . $empresa->imagen) }}" class="card-img-top"
+                                    alt="{{ $empresa->nombre }}">
                                 <div class="overlay">
                                     <div class="overlay-text text-center p-3">
-                                        <h5 class="fw-bold">{{ $empresa['nombre'] }}</h5>
-                                        <h5 class="small">{{ $empresa['descripcion'] }}</h5>
-                                        <a href="{{ $empresa['ruta'] }}" class="btn btn-sm btn-info rounded-pill mt-2">Más
-                                            Información</a>
+                                        <h5 class="fw-bold">{{ $empresa->nombre }}</h5>
+                                        <h5 class="small">{{ $empresa->descripcion ?? 'Sin descripción' }}</h5>
+                                        <a href="{{ url('/empresa/' . $empresa->id) }}"
+                                            class="btn btn-sm btn-info rounded-pill mt-2">
+                                            Más Información
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     @endforeach
-
                 </div>
             </div>
         </div>
