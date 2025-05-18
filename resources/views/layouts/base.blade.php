@@ -52,37 +52,34 @@
         </div>
     </main>
 
-
-    <footer class="footer text-white py-4 ">
-        <div class="container text-center">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <h5>Contacto</h5>
-                    <p><i class="bi bi-envelope"></i> Email: sostitrans@gmail.com</p>
-                    <p><i class="bi bi-telephone"></i> Teléfono: 018000456</p>
+<footer class="footer text-white py-4">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <h5>Contacto</h5>
+                <p><i class="bi bi-envelope"></i> Email: sostitrans@gmail.com</p>
+                <p><i class="bi bi-telephone"></i> Teléfono: 018000456</p>
+            </div>
+            <div class="col-md-6 mb-3">
+                <h5>Síguenos</h5>
+                <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                    <a href="#" class="text-white text-decoration-none d-flex align-items-center gap-2">
+                        <i class="bi bi-instagram" style="font-size: 24px;"></i> @sostitrans
+                    </a>
+                    <a href="#" class="text-white text-decoration-none d-flex align-items-center gap-2">
+                        <i class="bi bi-twitter" style="font-size: 24px;"></i> @sostitrans
+                    </a>
+                    <a href="#" class="text-white text-decoration-none d-flex align-items-center gap-2">
+                        <i class="bi bi-whatsapp" style="font-size: 24px;"></i> +57 305 381 7080
+                    </a>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <h5>Síguenos</h5>
-                    <div class="d-flex justify-content-center gap-3">
-                        <a href="#" class="text-white text-decoration-none">
-                            <i class="bi bi-instagram" style="font-size: 24px;"></i>
-                            @sostitrans
-                        </a>
-                        <a href="#" class="text-white text-decoration-none">
-                            <i class="bi bi-twitter" style="font-size: 24px;"></i>
-                            @sostitrans
-                        </a>
-                        <a href="#" class="text-white text-decoration-none">
-                            <i class="bi bi-whatsapp" style="font-size: 24px;"></i>
-                            +57 305 381 7080
-                        </a>
-                    </div>
-                </div>
-                <hr style="border-color: rgba(240, 235, 216, 0.2); margin: 0.5rem auto; width: 50%;">
-                <p class="small">&copy; 2025 SostiTrans. Todos los derechos reservados.</p>
             </div>
         </div>
-    </footer>
+        <hr class="my-3" style="border-color: rgba(240, 235, 216, 0.2); width: 50%;">
+        <p class="small mb-0">&copy; 2025 SostiTrans. Todos los derechos reservados.</p>
+    </div>
+</footer>
+
 
 
     <script>

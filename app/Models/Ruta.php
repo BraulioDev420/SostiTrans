@@ -15,6 +15,8 @@ class Ruta extends Model
         'destino',
         'bus_sugerido',
         'geojson_file',
+        'instrucciones_caminando',
+        'geojson_caminando'
     ];
 
     public function user()

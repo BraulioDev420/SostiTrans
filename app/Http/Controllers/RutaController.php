@@ -17,6 +17,8 @@ class RutaController extends Controller
             'destino' => 'required|string|max:255',
             'bus_sugerido' => 'nullable|string|max:255',
             'geojson_file' => 'required|string|max:255', 
+            'instrucciones_caminando' => 'nullable|string',
+            'geojson_caminando' => 'nullable|string',
         ]);
 
         $ruta = Ruta::create([
@@ -26,6 +28,9 @@ class RutaController extends Controller
             'destino' => $request->destino,
             'bus_sugerido' => $request->bus_sugerido,
             'geojson_file' => $request->geojson_file, 
+            'instrucciones_caminando' => json_encode($request->instrucciones_caminando),
+            'geojson_caminando' => $request->geojson_caminando
+            
         ]);
 
         return response()->json([

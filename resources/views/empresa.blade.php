@@ -3,10 +3,14 @@
 @section('title', $empresa->nombre)
 
 @section('content')
+    
+
+    <div id="sidebar-toggle">&#x25B6;</div> <!-- Flecha derecha -->
+
     <div class="container-fluid">
         <div class="row">
             <!-- Menú lateral izquierdo -->
-            <div class="col-md-3">
+            <div id="sidebar" class="col-md-3">
                 <div class="list-group">
                     <a href="{{ url('/rutas') }}" class="list-group-item list-group-item-action">
                         Rutas y Paradas
@@ -33,7 +37,6 @@
                                     <a href="#" onclick="scrollToMap(); cargarRuta('{{ $ruta }}')" class="ruta-link">
                                         🚏 {{ $ruta }}
                                     </a>
-
                                 </li>
                             @endforeach
                         </ul>
@@ -46,56 +49,66 @@
                     <div id="map" class="rounded-4 shadow-sm" style="height: 500px; width: 100%;"></div>
                 </div>
             </div>
-
         </div>
     </div>
+
+    <div id="content-overlay" class="content-overlay"></div>
 
     <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script>
+        // Toggle sidebar on mobile
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const contentOverlay = document.getElementById('content-overlay');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('show');
+            contentOverlay.classList.toggle('show');
+        });
+
+        contentOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('show');
+            contentOverlay.classList.remove('show');
+        });
+
         function scrollToMap() {
             const mapSection = document.getElementById('map-section');
             if (mapSection) {
                 mapSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
+
         let map = L.map('map').setView([10.96854, -74.78132], 13); // Barranquilla
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            
         }).addTo(map);
 
         let geojsonLayer;
 
-        // Función para cargar la ruta seleccionada
         function cargarRuta(nombreArchivo) {
             if (geojsonLayer) {
                 map.removeLayer(geojsonLayer);
             }
 
-            // Obtener el nombre de la carpeta de acuerdo con la empresa
-            let empresaNombre = '{{ strtolower($empresa->nombre) }}'; // "sobusa", "alianzasodis", etc.
+            let empresaNombre = '{{ strtolower($empresa->nombre) }}';
 
-            console.log(`/js/${empresaNombre}/${nombreArchivo}.geojson`);
-
-            // Cargar el archivo GeoJSON de la ruta correspondiente
             fetch(`/js/${empresaNombre}/${nombreArchivo}.geojson`)
                 .then(response => response.json())
                 .then(data => {
-                    let colorRuta = 'green'; // Valor predeterminado (para Sobusa)
+                    let colorRuta = 'green';
 
-                    // Asignar color según la empresa
                     if (empresaNombre === 'sobusa') {
-                        colorRuta = '#32CD32'; // Sobusa -> verde
+                        colorRuta = '#32CD32';
                     } else if (empresaNombre === 'alianza sodis') {
-                        colorRuta = 'blue'; // Alianza Sodis -> azul
+                        colorRuta = 'blue';
                     } else if (empresaNombre === 'coolitoral') {
-                        colorRuta = '#006400'; // Coolitoral -> verde más oscuro
+                        colorRuta = '#006400';
                     } else if (empresaNombre === 'la carolina') {
-                        colorRuta = '#996515'; // La Carolina -> marrón/dorado
+                        colorRuta = '#996515';
                     }
 
                     geojsonLayer = L.geoJSON(data, {
@@ -106,12 +119,10 @@
                         }
                     }).addTo(map);
 
-                    // Ajustar el mapa a los límites de la ruta cargada
                     const bounds = geojsonLayer.getBounds();
                     map.fitBounds(bounds);
                 })
                 .catch(error => console.error('Error al cargar el archivo GeoJSON:', error));
-
         }
     </script>
 @endsection

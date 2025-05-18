@@ -5,9 +5,10 @@
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="container-fluid">
+        <div id="sidebar-toggle">&#x25B6;</div> <!-- Flecha derecha -->
         <div class="row">
             <!-- Menú lateral izquierdo -->
-            <div class="col-md-3">
+            <div id="sidebar" class="col-md-3">
                 <div class="list-group rounded shadow-sm glass-effect" id="menu-lateral">
                     <a href="#"
                         class="list-group-item list-group-item-action active d-flex align-items-center bg-info text-white">
@@ -30,8 +31,20 @@
                         <i class="fas fa-bus me-3"></i> La Carolina
                     </a>
                 </div>
+
+                <!-- Instrucciones para caminar más abajo -->
+                <div id="panel-instrucciones" class="card shadow-sm border-0 mt-5 mb-4" style=" display: none;">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3 text-primary d-flex align-items-center">
+                            <i class="fas fa-walking me-2"></i> Instrucciones para caminar
+                        </h5>
+                        <ul id="lista-instrucciones" class="list-unstyled ps-2 mb-0"></ul>
+                    </div>
+                </div>
             </div>
-            
+
+
+
             <!-- Contenido principal -->
             <div class="col-md-9">
                 <h1 class="titulo-flota text-primary fw-bold mb-4">Rutas y Paradas</h1>
@@ -86,6 +99,7 @@
                                 </div>
 
                             </div>
+
                         </div>
 
                     </div>
@@ -125,6 +139,7 @@
                                 onclick="document.getElementById('modalGestion').style.display='none'">
                                 ❌ Cerrar
                             </button>
+
                         </div>
                     </div>
                 </div>
@@ -145,12 +160,10 @@
                 </style>
 
 
-
-
-
                 <!-- Mapa de Barranquilla -->
                 <div class="border-0 rounded-4" id="map" style="height: 500px; width: 100%;"></div>
             </div>
+
 
         </div>
     </div>
@@ -165,6 +178,7 @@
         let puntoA, puntoB;
         let rutasGeojson = [];
         let rutaEnMapa;
+
 
         // Mapa base
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -207,16 +221,25 @@
             return R * c;
         }
 
-        // Función para buscar la ruta
-        function buscarRuta() {
-            const valA = document.getElementById('puntoA').value;
-            const valB = document.getElementById('puntoB').value;
-            // Limpiar mapa completamente antes de cargar nueva ruta
+        async function buscarRuta() {
+            const valA = document.getElementById('puntoA').value.trim();
+            const valB = document.getElementById('puntoB').value.trim();
+
+            if (!valA || !valB) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '¡Atención!',
+                    text: 'Por favor, ingresa las direcciones del Punto A y Punto B.',
+                    confirmButtonText: 'Entendido'
+                });
+                return;
+            }
+
+            // Limpiar capas anteriores del mapa
             if (window.rutaEnMapa) {
                 map.removeLayer(window.rutaEnMapa);
                 window.rutaEnMapa = null;
             }
-
             if (window.puntoA) {
                 map.removeLayer(window.puntoA);
                 window.puntoA = null;
@@ -225,122 +248,117 @@
                 map.removeLayer(window.puntoB);
                 window.puntoB = null;
             }
-            if (!valA || !valB) {
+
+            async function obtenerCoordenadas(direccion) {
+                if (puntoA) map.removeLayer(puntoA);
+                if (puntoB) map.removeLayer(puntoB);
+                try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(direccion)}`);
+                    const data = await response.json();
+                    if (data.length === 0) throw new Error();
+                    return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+                } catch {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Dirección no encontrada',
+                        text: `No se pudo encontrar la dirección: ${direccion}`,
+                        confirmButtonText: 'Entendido'
+                    });
+                    return null;
+                }
+            }
+
+            const coordenadasA = await obtenerCoordenadas(valA);
+            const coordenadasB = await obtenerCoordenadas(valB);
+            if (!coordenadasA || !coordenadasB) return;
+
+            const { lat: latA, lon: lonA } = coordenadasA;
+            const { lat: latB, lon: lonB } = coordenadasB;
+
+            // Añadir marcadores al mapa
+            window.puntoA = L.marker([latA, lonA]).addTo(map).bindPopup("Punto A").openPopup();
+            window.puntoB = L.marker([latB, lonB]).addTo(map).bindPopup("Punto B").openPopup();
+
+            // Actualizar inputs con coordenadas
+            document.getElementById('puntoA').value = `${latA},${lonA}`;
+            document.getElementById('puntoB').value = `${latB},${lonB}`;
+
+            // Buscar la mejor ruta
+            //let mejorRuta = null;
+            let mejorDistancia = Infinity;
+
+            rutasGeojson.forEach(ruta => {
+                let distA = Infinity, distB = Infinity;
+                ruta.coords.forEach(coord => {
+                    const d1 = distancia(latA, lonA, coord.lat, coord.lng);
+                    const d2 = distancia(latB, lonB, coord.lat, coord.lng);
+                    if (d1 < distA) distA = d1;
+                    if (d2 < distB) distB = d2;
+                });
+
+                const total = distA + distB;
+                if (total < mejorDistancia) {
+                    mejorDistancia = total;
+                    mejorRuta = ruta;
+                }
+            });
+
+            if (!mejorRuta) {
                 Swal.fire({
-                    icon: 'warning',
-                    title: '¡Atención!',
-                    text: 'Por favor, selecciona Punto A y Punto B.',
+                    icon: 'error',
+                    title: 'Ruta no encontrada',
+                    text: 'No se encontró una ruta cercana.',
                     confirmButtonText: 'Entendido'
                 });
+                document.getElementById('resultadoRuta').innerText = '';
                 return;
             }
 
+            // Mostrar la mejor ruta en el mapa
+            const empresaNombre = (() => {
+                const archivo = mejorRuta.archivo.toLowerCase();
+                if (archivo.includes('sobusa')) return 'sobusa';
+                if (archivo.includes('alianza sodis')) return 'alianza sodis';
+                if (archivo.includes('coolitoral')) return 'coolitoral';
+                if (archivo.includes('la carolina')) return 'la carolina';
+                return 'desconocida';
+            })();
 
-            // Traduce la dirección en texto a coordenadas geográficas reales.
-            // Obtiene coordenadas usando Nominatim
-            function obtenerCoordenadas(direccion) {
-                return fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${direccion}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data && data.length > 0) {
-                            return {
-                                lat: parseFloat(data[0].lat),
-                                lon: parseFloat(data[0].lon)
-                            };
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error!',
-                                text: 'No se pudo encontrar la dirección.',
-                                confirmButtonText: 'Entendido'
-                            });
-                            return null;
-                        }
-                    });
-            }
+            const colores = {
+                'sobusa': '#32CD32',
+                'alianza sodis': 'blue',
+                'coolitoral': '#006400',
+                'la carolina': '#996515',
+                'desconocida': 'gray'
+            };
 
-            // Obtener coordenadas de ambas direcciones
-            // Usando Promise.all para esperar ambas respuestas
-            Promise.all([obtenerCoordenadas(valA), obtenerCoordenadas(valB)])
-                .then(([coordenadasA, coordenadasB]) => {
-                    if (!coordenadasA || !coordenadasB) return;
+            window.rutaEnMapa = L.geoJSON(mejorRuta.data, {
+                style: {
+                    color: colores[empresaNombre],
+                    weight: 5,
+                    opacity: 0.9
+                }
+            }).addTo(map);
+            map.fitBounds(window.rutaEnMapa.getBounds());
 
-                    const { lat: latA, lon: lonA } = coordenadasA;
-                    const { lat: latB, lon: lonB } = coordenadasB;
+            const rutaNombre = mejorRuta.archivo.split('/').pop().replace('.geojson', '');
+            const rutaLabel = `${empresaNombre}/${rutaNombre}`;
+            const resultadoEl = document.getElementById('resultadoRuta');
+            resultadoEl.innerText = rutaLabel;
+            resultadoEl.dataset.busSugerido = rutaLabel;
+            resultadoEl.dataset.nombreRuta = rutaNombre;
 
-                    if (puntoA) map.removeLayer(puntoA);
-                    if (puntoB) map.removeLayer(puntoB);
+            // Punto más cercano a A
+            const puntoCercano = mejorRuta.coords.reduce((min, actual) => {
+                const dist = distancia(latA, lonA, actual.lat, actual.lng);
+                return dist < min.dist ? { ...actual, dist } : min;
+            }, { dist: Infinity });
 
-                    puntoA = L.marker([latA, lonA]).addTo(map).bindPopup("Punto A").openPopup();
-                    puntoB = L.marker([latB, lonB]).addTo(map).bindPopup("Punto B").openPopup();
+            // Obtener instrucciones caminando
+            obtenerInstruccionesCaminando({ lat: latA, lon: lonA }, { lat: puntoCercano.lat, lon: puntoCercano.lng });
 
-                    document.getElementById('puntoA').value = `${latA},${lonA}`;
-                    document.getElementById('puntoB').value = `${latB},${lonB}`;
-
-
-                    let mejorDistancia = Infinity;
-                    //Busca la mejor ruta según cercanía
-                    rutasGeojson.forEach(ruta => {
-                        let distA = Infinity, distB = Infinity;
-                        //Suma las dos distancias (inicio + fin), y la ruta con menor total es la mejor.
-                        ruta.coords.forEach(coord => {
-                            const d1 = distancia(latA, lonA, coord.lat, coord.lng);
-                            const d2 = distancia(latB, lonB, coord.lat, coord.lng);
-                            if (d1 < distA) distA = d1;
-                            if (d2 < distB) distB = d2;
-                        });
-
-                        const total = distA + distB;
-                        if (total < mejorDistancia) {
-                            mejorDistancia = total;
-                            mejorRuta = ruta;
-                        }
-                    });
-                    //Dibuja la mejor ruta en el mapa
-                    if (mejorRuta) {
-                        if (rutaEnMapa) map.removeLayer(rutaEnMapa);
-
-                        let empresaNombre = '';
-                        if (mejorRuta.archivo.includes('sobusa')) empresaNombre = 'sobusa';
-                        else if (mejorRuta.archivo.includes('alianza sodis')) empresaNombre = 'alianza sodis';
-                        else if (mejorRuta.archivo.includes('coolitoral')) empresaNombre = 'coolitoral';
-                        else if (mejorRuta.archivo.includes('la carolina')) empresaNombre = 'la carolina';
-
-                        let colorRuta = 'green';
-                        if (empresaNombre === 'sobusa') colorRuta = '#32CD32';
-                        else if (empresaNombre === 'alianza sodis') colorRuta = 'blue';
-                        else if (empresaNombre === 'coolitoral') colorRuta = '#006400';
-                        else if (empresaNombre === 'la carolina') colorRuta = '#996515';
-
-                        rutaEnMapa = L.geoJSON(mejorRuta.data, {
-                            style: {
-                                color: colorRuta,
-                                weight: 5,
-                                opacity: 0.9
-                            }
-                        }).addTo(map);
-                        map.fitBounds(rutaEnMapa.getBounds());
-
-                        const rutaNombre = mejorRuta.archivo.split('/').pop().replace('.geojson', '');
-                        const rutaLabel = `${empresaNombre.charAt(0) + empresaNombre.slice(1)}/${rutaNombre}`;
-
-                        document.getElementById('resultadoRuta').innerText = `${rutaLabel}`;
-
-                        // Solo rutaLabel (sin "Ruta Encontrada:") como path del archivo
-                        document.getElementById('resultadoRuta').dataset.busSugerido = rutaLabel;
-                        document.getElementById('resultadoRuta').dataset.nombreRuta = rutaNombre;
-                    } else {
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Ruta no encontrada',
-                            text: 'No se encontró una ruta cercana.',
-                            confirmButtonText: 'Entendido'
-                        });
-                        document.getElementById('resultadoRuta').innerText = '';
-                    }
-                });
         }
+
 
         // Cargar rutas GeoJSON
         const rutas = [
@@ -399,11 +417,97 @@
                     rutasGeojson.push({ archivo: r.archivo, data, coords });
                 });
         });
+        function obtenerInstruccionesCaminando(origen, destino) {
+            const apiKey = '5b3ce3597851110001cf624828165cc2256d405e9671cd6a320ea5ec';
+
+            const coordenadas = [
+                [origen.lon, origen.lat],
+                [destino.lon, destino.lat]
+            ];
+
+            // GeoJSON para trazar la caminata
+            const bodyGeojson = { coordinates: coordenadas };
+
+            // 1. Trazar caminata
+            fetch('https://api.openrouteservice.org/v2/directions/foot-walking/geojson', {
+                method: 'POST',
+                headers: {
+                    'Authorization': apiKey,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bodyGeojson)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    window.caminata = JSON.stringify(data);
+
+                    const caminata = L.geoJSON(data, {
+                        style: {
+                            color: '#FF4500',
+                            weight: 4,
+                            dashArray: '5, 10'
+                        }
+                    }).addTo(map);
+
+                    if (window.caminataActual) {
+                        map.removeLayer(window.caminataActual);
+                    }
+                    window.caminataActual = caminata;
+                })
+                .catch(err => {
+                    console.error('Error al trazar el camino:', err);
+                    Swal.fire('Error', 'No se pudo trazar el camino caminando.', 'error');
+                });
+
+            // 2. Obtener instrucciones
+            const bodyInstrucciones = {
+                coordinates: coordenadas,
+                instructions: true,
+                language: "es"
+            };
+
+            fetch('https://api.openrouteservice.org/v2/directions/foot-walking', {
+                method: 'POST',
+                headers: {
+                    'Authorization': apiKey,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bodyInstrucciones)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    const instrucciones = data.routes[0].segments[0].steps;
+                    const lista = document.getElementById("lista-instrucciones");
+                    lista.innerHTML = "";
+
+                    instrucciones.forEach((paso, index) => {
+                        const li = document.createElement("li");
+                        li.innerHTML = `<i class="fas fa-chevron-right me-2 text-success"></i>${index + 1}. ${paso.instruction}`;
+                        lista.appendChild(li);
+                    });
+
+                    // 🔸 Guardamos las instrucciones como texto plano para enviarlas al backend
+                    const textoPlano = instrucciones.map((paso, i) => `${i + 1}. ${paso.instruction}`).join('\n');
+                    window.bodyInstrucciones = textoPlano;
+
+                    document.getElementById("panel-instrucciones").style.display = "block";
+                })
+                .catch(err => {
+                    console.error('Error al obtener instrucciones:', err);
+                    Swal.fire('Error', 'No se pudieron obtener las instrucciones caminando.', 'error');
+                });
+        }
+
+
+
+
 
 
         // Guardar ruta
+        // Guarda la ruta en base a datos actuales y ruta caminando ya trazada
         function guardarRuta() {
             const user_id = @json(auth()->check() ? auth()->user()->id : null);
+
             if (!user_id) {
                 Swal.fire({
                     icon: 'warning',
@@ -411,7 +515,6 @@
                     text: 'Debes iniciar sesión para guardar una ruta.',
                     confirmButtonText: 'Entendido'
                 });
-
                 return;
             }
 
@@ -428,85 +531,106 @@
                         return 'Debes escribir un nombre para la ruta';
                     }
                 }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const nombre_ruta = result.value;
-                    const origen = document.getElementById('puntoA').value.trim();
-                    const destino = document.getElementById('puntoB').value.trim();
-                    const bus_sugerido = document.getElementById('resultadoRuta').innerText.trim();
-                    const geojson_file = mejorRuta?.archivo?.split('/').pop(); 
+            }).then(async (result) => {
+                if (!result.isConfirmed) return;
 
-                    if (!origen || !destino) {
-                        Swal.fire({
-                            icon: 'info',
-                            title: 'Campos incompletos',
-                            text: 'Por favor completa los campos de origen y destino.',
-                            confirmButtonText: 'Ok'
-                        });
-                        return;
-                    }
+                const nombre_ruta = result.value;
+                const origen = document.getElementById('puntoA').value.trim();
+                const destino = document.getElementById('puntoB').value.trim();
+                const bus_sugerido = document.getElementById('resultadoRuta').innerText.trim();
+                const geojson_file = mejorRuta?.archivo?.split('/').pop();
+                const instrucciones_caminando = window.bodyInstrucciones;
+                const geojson_caminando = window.caminata;
 
-                    if (!mejorRuta || !geojson_file) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Ruta no válida',
-                            text: 'No se ha encontrado una ruta válida para guardar.',
-                            confirmButtonText: 'Entendido'
-                        });
-                        return;
-                    }
+                if (!origen || !destino) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Campos incompletos',
+                        text: 'Por favor completa los campos de origen y destino.',
+                        confirmButtonText: 'Ok'
+                    });
+                    return;
+                }
 
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-                    if (!csrfToken) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error de seguridad',
-                            text: 'No se encontró el token CSRF.',
-                            confirmButtonText: 'Cerrar'
-                        });
-                        return;
-                    }
+                if (!mejorRuta || !geojson_file) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Ruta no válida',
+                        text: 'No se ha encontrado una ruta válida para guardar.',
+                        confirmButtonText: 'Entendido'
+                    });
+                    return;
+                }
 
-                    fetch("/guardar-ruta", {
+                if (!window.caminataActual) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Camino caminando no disponible',
+                        text: 'Por favor, primero traza la ruta caminando para poder guardarla.',
+                        confirmButtonText: 'Cerrar'
+                    });
+                    return;
+                }
+
+
+
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                if (!csrfToken) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de seguridad',
+                        text: 'No se encontró el token CSRF.',
+                        confirmButtonText: 'Cerrar'
+                    });
+                    return;
+                }
+
+                try {
+                    const response = await fetch("/guardar-ruta", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
                             "X-CSRF-TOKEN": csrfToken
                         },
+
                         body: JSON.stringify({
                             user_id,
                             nombre_ruta,
                             origen,
                             destino,
                             bus_sugerido,
-                            geojson_file
+                            geojson_file,
+                            instrucciones_caminando,
+                            geojson_caminando
                         })
-                    })
-                        .then(response => {
-                            if (!response.ok) throw new Error("Error al guardar la ruta.");
-                            return response.json();
-                        })
-                        .then(data => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '¡Ruta guardada!',
-                                text: 'Ruta guardada exitosamente.',
-                                confirmButtonText: 'Ok'
-                            });
-                            console.log("Ruta guardada:", data);
-                        })
-                        .catch(error => {
-                            console.error("Error:", error);
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error al guardar',
-                                text: 'Hubo un problema al guardar la ruta.',
-                                confirmButtonText: 'Cerrar'
-                            });
-                        });
+                    });
+
+                    if (!response.ok) throw new Error("Error al guardar la ruta.");
+
+                    const data = await response.json();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Ruta guardada!',
+                        text: 'Ruta guardada exitosamente.',
+                        confirmButtonText: 'Ok'
+                    });
+
+                    console.log("Ruta guardada:", data);
+                } catch (error) {
+                    console.error("Error:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al guardar',
+                        text: 'Hubo un problema al guardar la ruta.',
+                        confirmButtonText: 'Cerrar'
+                    });
                 }
             });
         }
+
+
+
 
         // Abrir modal para gestionar rutas
         document.getElementById("abrirModal").onclick = async () => {
@@ -558,6 +682,9 @@
                 option.dataset.bus = document.getElementById('resultadoRuta').dataset.busSugerido;
                 option.dataset.geojson = ruta.geojson_file;
                 option.dataset.bus = ruta.bus_sugerido;
+                option.dataset.instruccionesCaminando = ruta.instrucciones_caminando;  // texto o URL con instrucciones
+                option.dataset.geojsonCaminando = ruta.geojson_caminando;            // nombre del archivo GeoJSON caminando
+
                 select.appendChild(option);
             });
         }
@@ -689,6 +816,78 @@
                     confirmButtonText: 'Cerrar'
                 });
             }
+            const geojsonCaminando = selected.dataset.geojsonCaminando;
+            const instruccionesCaminando = selected.dataset.instruccionesCaminando;
+
+            // Mostrar instrucciones caminando si tienes un contenedor para eso
+            if (instruccionesCaminando) {
+                const panel = document.getElementById('panel-instrucciones');
+                const lista = document.getElementById('lista-instrucciones');
+
+                // Mostrar el panel
+                if (panel) panel.style.display = 'block';
+
+                // Limpiar lista anterior
+                if (lista) {
+                    lista.innerHTML = '';
+
+                    // Si las instrucciones están en formato string con saltos de línea
+                    const instrucciones = instruccionesCaminando.split('\\n'); // Ojo: doble backslash por si viene como string JSON
+
+                    instrucciones.forEach(instr => {
+                        if (instr.trim() !== '') {
+                            const li = document.createElement('li');
+                            li.innerHTML = `<i class="fas fa-chevron-right me-2 text-success"></i>${instr}`;
+                            lista.appendChild(li);
+                        }
+                    });
+                }
+            }
+
+
+            // Cargar GeoJSON caminando en el mapa
+            if (geojsonCaminando) {
+                try {
+                    const geoJsonCaminoUrl = `js/${geojsonCaminando}.geojson`;  // o ruta correcta
+                    const respCamino = await fetch(geoJsonCaminoUrl);
+                    if (!respCamino.ok) throw new Error(`Error HTTP caminando: ${respCamino.status}`);
+
+                    const dataCamino = await respCamino.json();
+
+                    if (!dataCamino || !dataCamino.features || !Array.isArray(dataCamino.features) || dataCamino.features.length === 0) {
+                        throw new Error("El GeoJSON caminando está vacío o mal formado.");
+                    }
+
+                    // Quitar ruta caminando anterior si existe
+                    if (window.rutaCaminandoEnMapa) {
+                        map.removeLayer(window.rutaCaminandoEnMapa);
+                        window.rutaCaminandoEnMapa = null;
+                    }
+
+                    // Pintar ruta caminando con otro color o estilo
+                    window.rutaCaminandoEnMapa = L.geoJSON(dataCamino, {
+                        style: {
+                            color: '#0000FF',  // color azul para camino a pie
+                            weight: 4,
+                            opacity: 0.7,
+                            dashArray: '5,10'
+                        },
+                        onEachFeature: (feature, layer) => {
+                            if (feature.properties && feature.properties.name) {
+                                layer.bindPopup(`Camino: ${feature.properties.name}`);
+                            }
+                        }
+                    }).addTo(map);
+
+                } catch (error) {
+                    console.error('Error al cargar el GeoJSON caminando:', error);
+                    // Puedes mostrar alerta si quieres
+                }
+            }
+             if (window.caminataActual) {
+                map.removeLayer(window.caminataActual);
+                window.caminataActual = null;
+            }
         };
 
 
@@ -739,6 +938,21 @@
             });
             document.getElementById('modalGestion').style.display = 'none';
         };
+        // Toggle sidebar on mobile
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const contentOverlay = document.getElementById('content-overlay');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('show');
+            contentOverlay.classList.toggle('show');
+        });
+
+        contentOverlay.addEventListener('click', () => {
+            sidebar.classList.remove('show');
+            contentOverlay.classList.remove('show');
+        });
+
 
     </script>
 

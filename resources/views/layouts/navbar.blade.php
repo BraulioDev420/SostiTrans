@@ -8,7 +8,6 @@
         padding: 0.75rem 1rem;
         transition: all 0.4s ease;
         background-color: rgba(29, 45, 68, 0.6);
-        /* Transparente */
         backdrop-filter: blur(10px);
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
     }
@@ -31,8 +30,7 @@
 
     .nav-link:hover {
         background-color: rgba(240, 235, 216, 0.1);
-        border-radius: 12px;
-        color:rgb(10, 10, 10) !important;
+        color: rgb(10, 10, 10) !important;
     }
 
     .nav-link.active-custom {
@@ -80,88 +78,101 @@
 
     body {
         padding-top: 80px;
-        /* espacio para el navbar fijo */
     }
 
     .user-info {
-    background-color: rgba(240, 235, 216, 0.1);
-    padding: 0.4rem 1.2rem;
-    border-radius: 30px;
-    color: #F0EBD8;
-    font-size: 1rem;
-    font-weight: 500;
-    text-shadow: 0 1px 3px black;
-    text-align: right;
-    white-space: nowrap;
-    height: 38px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
+        background-color: rgba(240, 235, 216, 0.1);
+        padding: 0.4rem 1.2rem;
+        border-radius: 30px;
+        color: #F0EBD8;
+        font-size: 1rem;
+        font-weight: 500;
+        text-shadow: 0 1px 3px black;
+        white-space: nowrap;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
 
-.user-info:hover {
-    background-color: rgba(240, 235, 216, 0.2);
-    cursor: default;
-}
+    .user-info:hover {
+        background-color: rgba(240, 235, 216, 0.2);
+        cursor: default;
+    }
 
+    @media (max-width: 992px) {
+        .navbar-nav {
+            flex-direction: column !important;
+            width: 100%;
+        }
+
+        .navbar-nav .nav-item {
+            width: 100%;
+            text-align: center;
+        }
+
+        .user-info,
+        .btn-outline-light {
+            width: 100%;
+            text-align: center;
+        }
+
+        .navbar-brand span {
+            font-size: 1.2rem !important;
+        }
+    }
 </style>
 
 <nav class="navbar navbar-expand-lg navbar-dark show" id="mainNavbar">
-    <div class="container-fluid d-flex flex-wrap justify-content-between align-items-center">
-        {{-- Logo estilizado --}}
+    <div class="container-fluid">
         <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('home') }}">
-            <img src="{{ asset('images/logo.jpg') }}" alt="Logo" width="55"
-                height="55" class="rounded-circle border border-light shadow-sm" />
+            <img src="{{ asset('images/logo.jpg') }}" alt="Logo" width="55" height="55" class="rounded-circle" />
             <span class="fw-bold fs-4 text-white" style="text-shadow: 1px 1px 5px #000000aa;">SostiTrans</span>
         </a>
 
-        {{-- Navegación principal --}}
-        <ul class="navbar-nav flex-row gap-3 mx-auto">
-            <li class="nav-item">
-                <a class="nav-link px-3 py-2 {{ request()->is('/') || request()->is('home') ? 'active-custom' : '' }}"
-                    href="{{ route('home') }}">Inicio</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            </li>
-            <li class="nav-item">
-                <a class="nav-link px-3 py-2 {{ request()->is('rutas*') || request()->is('empresa/*') ? 'active-custom' : '' }}"
-                    href="{{ route('rutas.index') }}">Rutas</a>
+        <div class="collapse navbar-collapse justify-content-between" id="navbarContent">
+            <ul class="navbar-nav mx-auto gap-lg-3">
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 {{ request()->is('/') || request()->is('home') ? 'active-custom' : '' }}"
+                        href="{{ route('home') }}">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 {{ request()->is('rutas*') || request()->is('empresa/*') ? 'active-custom' : '' }}"
+                        href="{{ route('rutas.index') }}">Rutas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 py-2 {{ request()->is('comentarios*') ? 'active-custom' : '' }}"
+                        href="{{ route('comentarios.index') }}">Comentarios</a>
+                </li>
+                @auth
+                    @if (auth()->user()->isAdmin())
+                        <li class="nav-item">
+                            <a class="nav-link px-3 py-2 {{ request()->is('admin*') ? 'active-custom' : '' }}"
+                                href="{{ route('admin.index') }}">Administración</a>
+                        </li>
+                    @endif
+                @endauth
+            </ul>
 
-            </li>
-            <li class="nav-item">
-                <a class="nav-link px-3 py-2 {{ request()->is('comentarios*') ? 'active-custom' : '' }}"
-                    href="{{ route('comentarios.index') }}">Comentarios</a>
-            </li>
-            @auth
-                @if (auth()->user()->isAdmin())
-                    <li class="nav-item">
-                        <a class="nav-link px-3 py-2 {{ request()->is('admin*') ? 'active-custom' : '' }}"
-                            href="{{ route('admin.index') }}">Administración</a>
-                    </li>
-                @endif
-            @endauth
-
-        </ul>
-
-        {{-- Usuario --}}
-        <div class="d-flex flex-column align-items-end gap-2">
-            @auth
-            <div class="d-flex flex-column align-items-end gap-2">
-    <div class="user-info w-100">
-        <i class="bi bi-person-circle me-2 fs-5"></i>
-        {{ auth()->user()->name . ' ' . auth()->user()->last_name }}
-    </div>
-    <form action="{{ route('logout') }}" method="POST" class="mb-0 w-100">
-        @csrf
-        <button type="submit" class="btn btn-outline-light btn-sm shadow-sm w-100">Cerrar Sesión</button>
-    </form>
-</div>
-
-            @else
-                <div class="d-flex flex-column align-items-end gap-2">
+            <div class="d-flex flex-column align-items-end gap-2 mt-3 mt-lg-0">
+                @auth
+                    <div class="user-info w-100">
+                        <i class="bi bi-person-circle me-2 fs-5"></i>
+                        {{ auth()->user()->name . ' ' . auth()->user()->last_name }}
+                    </div>
+                    <form action="{{ route('logout') }}" method="POST" class="mb-0 w-100">
+                        @csrf
+                        <button type="submit" class="btn btn-outline-light btn-sm shadow-sm w-100">Cerrar Sesión</button>
+                    </form>
+                @else
                     <a href="{{ route('register') }}" class="btn btn-outline-light btn-sm shadow-sm w-100">Crear Cuenta</a>
                     <a href="{{ route('login') }}" class="btn btn-outline-light btn-sm shadow-sm w-100">Iniciar Sesión</a>
-                </div>
-            @endauth
+                @endauth
+            </div>
         </div>
     </div>
 </nav>
@@ -172,7 +183,6 @@
 
     window.addEventListener('scroll', function () {
         let currentScrollPos = window.scrollY;
-
         if (currentScrollPos > prevScrollPos && currentScrollPos > 100) {
             navbar.classList.add('hidden');
             navbar.classList.remove('show');
@@ -180,7 +190,6 @@
             navbar.classList.add('show');
             navbar.classList.remove('hidden');
         }
-
         prevScrollPos = currentScrollPos;
     });
 </script>
