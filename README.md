@@ -1,4 +1,42 @@
+🚌 SostiTrans - Sistema de Rutas Óptimas para el Transporte Público
 
+SostiTrans es una aplicación web interactiva desarrollada con Laravel y Leaflet, pensada para mejorar la movilidad urbana en la ciudad de Barranquilla. Este sistema permite a los usuarios consultar rutas de buses, visualizar recorridos en un mapa dinámico, obtener recomendaciones de transporte público entre dos puntos y gestionar sus propias rutas.
+
+🚀 Funcionalidades principales
+
+🗺️ Mapa interactivo con Leaflet: Visualización de rutas mediante archivos GeoJSON.
+
+🔎 Consulta de rutas: El usuario puede ingresar dos direcciones (punto A y B) y obtener la mejor opción de transporte público disponible.
+
+🚌 Empresas de transporte: Rutas organizadas por cuatro empresas ficticias: Sobusa, Alianza Sodis, Coolitoral y La Carolina.
+
+💾 Gestión de rutas personalizadas: Posibilidad de guardar rutas en la base de datos, con opciones para cargarlas o eliminarlas fácilmente desde un modal.
+
+💬 Sección de comentarios: Usuarios autenticados pueden dejar opiniones; los comentarios se muestran en un carrusel dinámico.
+
+🌗 Modo claro/oscuro: Compatible con cambio de tema visual.
+
+🔐 Autenticación de usuarios: Registro, inicio de sesión y gestión segura de rutas personales.
+
+
+🛠️ Tecnologías utilizadas
+
+Laravel – Backend robusto en PHP.
+
+Leaflet.js – Visualización geográfica y mapas interactivos.
+
+GeoJSON – Formato utilizado para mostrar rutas en el mapa.
+
+JavaScript + CSS personalizado – Para interactividad y diseño responsivo.
+
+MySQL – Almacenamiento de rutas y usuarios.
+
+OpenStreetMap + Geocodificación – Para búsqueda de direcciones.
+
+
+🎯 Objetivo del proyecto
+
+SostiTrans busca optimizar el uso del transporte público ofreciendo a los ciudadanos una herramienta que les permita planificar mejor sus recorridos diarios, reduciendo el tiempo de espera, la desinformación y fomentando una movilidad más inteligente.
 # SostiTrans
 Proyecto SostiTrans
 
