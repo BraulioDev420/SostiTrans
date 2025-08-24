@@ -25,3 +25,10 @@ RUN composer install --no-dev --optimize-autoloader
 
 # Permisos para Laravel
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+
+# Exponer el puerto dinámico que Render asigna
+ENV PORT=10000
+EXPOSE 10000
+
+# 🔹 Usar servidor embebido de PHP (opción 2)
+CMD php -S 0.0.0.0:${PORT} -t public
